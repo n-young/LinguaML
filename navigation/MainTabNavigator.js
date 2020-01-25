@@ -4,7 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import LinksScreen, { CardView } from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
 const config = Platform.select({
@@ -21,6 +21,7 @@ HomeScreen.path = '';
 const LinksStack = createStackNavigator(
   {
     Links: LinksScreen,
+    Card: CardView,
   },
   config
 );
