@@ -18,6 +18,7 @@ import { RNCamera } from 'react-native-camera';
 import uuid from 'uuid';
 import Environment from '../config/environment';
 import firebase from '../config/firebase';
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 
 class HomeScreen extends React.Component {
   state = {
@@ -26,16 +27,14 @@ class HomeScreen extends React.Component {
     googleResponse: null,
   };
 
-  async componentDidMount() {
-    await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    await Permissions.askAsync(Permissions.CAMERA);
-  }
-
   render() {
     return (
       <View style={styles.container}>
         <StatusBar hidden />
         <RNCamera
+          ref={ref => {
+            this.camera = ref;
+          }}
           style={{
             flex: 1,
             width: '100%',
@@ -44,7 +43,8 @@ class HomeScreen extends React.Component {
           }}
           captureAudio={false}>
           <TouchableOpacity
-            onPress={this.submitToGoogle()}
+            //onPress={this.submitToGoogle()}
+            onPress={this.takePicture}
             style={styles.capture}>
             <Text style={{ fontSize: 14 }}> SNAP </Text>
           </TouchableOpacity>
@@ -53,57 +53,17 @@ class HomeScreen extends React.Component {
     );
   }
 
-  _keyExtractor = (item, index) => item.id;
-
-  _renderItem = item => {
-    <Text>response: {JSON.stringify(item)}</Text>;
-  };
-
-  _share = () => {
-    Share.share({
-      message: JSON.stringify(this.state.googleResponse.responses),
-      title: 'Check it out',
-      url: this.state.image,
-    });
-  };
-
-  _copyToClipboard = () => {
-    Clipboard.setString(this.state.image);
-    alert('Copied to clipboard');
-  };
-
-  _takePhoto = async () => {
-    let pickerResult = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-
-    this._handleImagePicked(pickerResult);
-  };
-
-  _pickImage = async () => {
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-    });
-
-    this._handleImagePicked(pickerResult);
-  };
-
-  _handleImagePicked = async pickerResult => {
-    try {
-      this.setState({ uploading: true });
-
-      if (!pickerResult.cancelled) {
-        uploadUrl = await uploadImageAsync(pickerResult.uri);
-        this.setState({ image: uploadUrl });
-      }
-    } catch (e) {
-      console.log(e);
-      alert('Upload failed, sorry :(');
-    } finally {
-      this.setState({ uploading: false });
+  takePicture = async() => {
+    if (this.camera) {
+      console.log("Hurrah");
+      const options = { quality: 0.5, base64: true };
+      const data = await this.camera.takePictureAsync(options);
+      const uploadUrl = await uploadImageAsync(data.uri)
+      this.setState({ image: uploadUrl });
+      this.submitToGoogle();
+      console.log(data.uri);
     }
+    console.log("eeea");
   };
 
   submitToGoogle = async () => {
@@ -133,6 +93,8 @@ class HomeScreen extends React.Component {
           },
         ],
       });
+      console.log("Body:")
+      console.log(body);
       let response = await fetch(
         'https://vision.googleapis.com/v1/images:annotate?key=' +
           Environment['GOOGLE_CLOUD_VISION_API_KEY'],
@@ -145,6 +107,8 @@ class HomeScreen extends React.Component {
           body: body,
         }
       );
+      console.log("Response:")
+      console.log(response);
       let responseJson = await response.json();
       console.log(responseJson);
       this.setState({
