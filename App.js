@@ -26,6 +26,7 @@ const App: () => React$Node = () => {
             flex: 1,
             width: '100%',
           }}
+          captureAudio={false}
         >
         </RNCamera>
        </View>
