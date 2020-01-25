@@ -13,12 +13,10 @@ class HomeScreen extends React.Component {
             width: '100%',
           }}
           captureAudio={false}
-        />
-        <View
-          style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity
-            onPress={this.takePicture.bind(this)}
-            style={this.styles.capture}>
+        >
+        </RNCamera>
+        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+          <TouchableOpacity onPress={this.takePicture.bind(this)} style={this.styles.capture}>
             <Text style={{ fontSize: 14 }}> SNAP </Text>
           </TouchableOpacity>
         </View>

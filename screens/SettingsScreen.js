@@ -1,4 +1,5 @@
 import React from 'react';
+import { ScrollView, StyleSheet, View, Text } from 'react-native';
 
 export default function SettingsScreen() {
   /**
