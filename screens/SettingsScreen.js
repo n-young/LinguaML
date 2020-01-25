@@ -9,7 +9,7 @@ export default function SettingsScreen() {
     <View>
       <Text>Hello Settings</Text>
     </View>
-  )
+  );
 }
 
 SettingsScreen.navigationOptions = {
