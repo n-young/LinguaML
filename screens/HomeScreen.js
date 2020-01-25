@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
 
 import { RNCamera } from 'react-native-camera';
 
@@ -7,19 +13,21 @@ class HomeScreen extends React.Component {
   render() {
     return (
       <View style={this.styles.container}>
+        <StatusBar hidden />
         <RNCamera
           style={{
             flex: 1,
             width: '100%',
+            display: 'flex',
+            justifyContent: 'flex-end',
           }}
-          captureAudio={false}
-        >
-        </RNCamera>
-        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity onPress={this.takePicture.bind(this)} style={this.styles.capture}>
+          captureAudio={false}>
+          <TouchableOpacity
+            onPress={this.takePicture.bind(this)}
+            style={this.styles.capture}>
             <Text style={{ fontSize: 14 }}> SNAP </Text>
           </TouchableOpacity>
-        </View>
+        </RNCamera>
       </View>
     );
   }

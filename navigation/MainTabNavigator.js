@@ -12,18 +12,11 @@ const config = Platform.select({
   default: {},
 });
 
-const HomeStack = createStackNavigator(
-  {
-    Home: HomeScreen,
-  },
-  config
-);
-
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home'
+HomeScreen.navigationOptions = {
+  tabBarLabel: 'Home',
 };
 
-HomeStack.path = '';
+HomeScreen.path = '';
 
 const LinksStack = createStackNavigator(
   {
@@ -33,7 +26,7 @@ const LinksStack = createStackNavigator(
 );
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Cards'
+  tabBarLabel: 'Cards',
 };
 
 LinksStack.path = '';
@@ -46,13 +39,13 @@ const SettingsStack = createStackNavigator(
 );
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings'
+  tabBarLabel: 'Settings',
 };
 
 SettingsStack.path = '';
 
 const tabNavigator = createBottomTabNavigator({
-  HomeStack,
+  HomeScreen,
   LinksStack,
   SettingsStack,
 });
