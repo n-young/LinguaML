@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Platform,
 } from 'react-native';
-import { withNavigation } from 'react-navigation';
+import { useNavigation } from '@react-navigation/native';
 
 export default function CardListScreen() {
   return (
@@ -79,9 +79,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const CardRow = withNavigation(_CardRow);
-/** @type {{navigation: import('react-navigation').NavigationScreenProp }} */
-function _CardRow({ navigation, card, separators }) {
+function CardRow({ card, separators }) {
+  const navigation = useNavigation();
   return (
     <TouchableHighlight
       onPress={() => navigation.navigate('Card', { card })}
@@ -100,8 +99,4 @@ function _CardRow({ navigation, card, separators }) {
 
 function DisclosureArrow() {
   return <View style={styles.disclosureArrow} />;
-}
-
-export function CardView({ card }) {
-  return <Text>lo and behold</Text>;
 }
