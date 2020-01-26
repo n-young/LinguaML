@@ -9,6 +9,7 @@ import LinksScreen from './screens/LinksScreen';
 import CardScreen from './screens/CardScreen';
 import EditCardScreen from './screens/EditCardScreen';
 import { Provider } from './store';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 
 enableScreens();
 
@@ -20,26 +21,28 @@ const config = Platform.select({
 const Main = createNativeStackNavigator();
 export default function App(props) {
   return (
-    <Provider>
-      <View style={styles.container}>
-        <NavigationNativeContainer>
-          <Main.Navigator>
-            <Main.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{ headerShown: false }}
-            />
-            <Main.Screen
-              name="Cards"
-              component={LinksScreen}
-              options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
-            />
-            <Main.Screen name="Card" component={CardScreen} />
-            <Main.Screen name="EditCard" component={EditCardScreen} />
-          </Main.Navigator>
-        </NavigationNativeContainer>
-      </View>
-    </Provider>
+    <ActionSheetProvider>
+      <Provider>
+        <View style={styles.container}>
+          <NavigationNativeContainer>
+            <Main.Navigator>
+              <Main.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{ headerShown: false }}
+              />
+              <Main.Screen
+                name="Cards"
+                component={LinksScreen}
+                options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
+              />
+              <Main.Screen name="Card" component={CardScreen} />
+              <Main.Screen name="EditCard" component={EditCardScreen} />
+            </Main.Navigator>
+          </NavigationNativeContainer>
+        </View>
+      </Provider>
+    </ActionSheetProvider>
   );
 }
 
