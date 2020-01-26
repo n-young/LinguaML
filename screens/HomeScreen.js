@@ -15,7 +15,11 @@ import { useNavigation } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
 import { red, orange, green } from '../constants';
+<<<<<<< Updated upstream
 import { useCards, useSetCards, useLang } from '../store';
+=======
+import { useCards, useSetCards, useLang, useSetLang, putCards, pullCards } from '../store';
+>>>>>>> Stashed changes
 import uuid from 'uuid/v4';
 import Translator from './Translate';
 import Card from '../components/Card';
@@ -181,7 +185,7 @@ function HomeScreen() {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-      Environment.GOOGLE_CLOUD_VISION_API_KEY,
+    Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({
