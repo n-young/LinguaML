@@ -69,7 +69,7 @@ function HomeScreen() {
           <TouchableOpacity
             onPress={() => navigation.navigate('Cards')}
             activeOpacity={0.75}>
-            <Text style={styles.listButton}>Lists</Text>
+            <Text style={styles.listButton}>☰</Text>
           </TouchableOpacity>
         </View>
       </RNCamera>
@@ -150,7 +150,11 @@ const styles = StyleSheet.create({
   listButton: {
     width: 50,
     color: 'white',
-    fontSize: 18,
+    fontSize: 50,
+    shadowColor: 'black',
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 0 },
   },
 });
 
