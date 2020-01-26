@@ -19,7 +19,7 @@ import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
 import firebase from '../config/firebase';
 import { orange } from '../constants';
-import translate from 'translate';
+//import translate from 'translate';
 
 function HomeScreen() {
   const [uploading, setUploading] = useState(false);
@@ -77,10 +77,12 @@ function HomeScreen() {
   );
 }
 
+/*
 const translateText = async text => {
   let translation = await translate.translate(text, this.state.foreignLanguage);
   console.log('Translations:', translation);
 };
+*/
 
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
@@ -107,19 +109,16 @@ async function callGoogleVisionApi(base64) {
   const data = await googleVisionRes.json().catch(error => console.log(error));
 
   if (data) {
-    console.log('RESPONSE: ', this.state.googleVisionDetection);
+    const ret = data.responses[0].labelAnnotations[0].description;
     console.log(
-      'LABEL: ',
-      this.state.googleVisionDetection.labelAnnotations[0].description
+      'LABEL: ', ret
     );
-    const ret = this.state.googleVisionDetection.labelAnnotations[0]
-      .description;
-    translate(ret, { from: 'en', to: this.state.foreignLanguage }).then(
-      text => {
-        console.log(text);
-      }
-    );
-    return data.responses[0];
+    // translate(ret, { from: 'en', to: this.state.foreignLanguage }).then(
+    //   text => {
+    //     console.log(text);
+    //   }
+    // );
+    return ret;
   }
 }
 
