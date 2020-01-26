@@ -97,7 +97,7 @@ function CardRow({ card, separators }) {
   const navigation = useNavigation();
   return (
     <TouchableHighlight
-      onPress={() => navigation.navigate('Card', { card })}
+      onPress={() => navigation.navigate('Card', { id: card.id })}
       onShowUnderlay={separators.highlight}
       onHideUnderlay={separators.unhighlight}>
       <View style={styles.row}>

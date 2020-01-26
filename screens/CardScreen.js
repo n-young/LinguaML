@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,15 +7,12 @@ import {
   Easing,
   Button,
   Image,
-  Modal,
-  Platform,
 } from 'react-native';
-import { useRoute } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/core';
 import FlipView from '../components/FlipView';
-import { useNavigation } from '@react-navigation/native';
+import { useCard } from '../store';
 import useDeviceOrientation from '@rnhooks/device-orientation';
 import Tts from 'react-native-tts';
-import qrcode from 'yaqrcode';
 
 function Card({ label }) {
   return (
@@ -32,35 +29,35 @@ function Card({ label }) {
 }
 
 export default function CardScreen() {
-  const { card } = useRoute().params;
+  const card = useCard();
   const navigation = useNavigation();
   const [flipped, flip] = useReducer(f => !f, false);
-  const [qrShow, setQrShow] = React.useState(false);
 
   navigation.setOptions({
+    title: '',
     headerRight: () => (
       <>
-        <Button
-          onPress={() => navigation.navigate('EditCard', { card })}
-          title="Edit"
-          style={{ marginRight: 16 }}
-        />
-        <Button
-          onPress={() => Tts.speak(flipped ? card.native : card.foreign)}
-          title="Speak"
-        />
-        <Button onPress={() => setQrShow(true)} title="Share" />
+        <View style={styles.toolbar}>
+          <Button
+            onPress={() => navigation.navigate('EditCard', { id: card.id })}
+            title="Edit"
+          />
+        </View>
+        <View style={styles.toolbar}>
+          <Button
+            onPress={() => Tts.speak(flipped ? card.native : card.foreign)}
+            title="Speak"
+          />
+        </View>
+        <View style={styles.toolbar}>
+          <Button
+            onPress={() => navigation.navigate('ShowQR', { id: card.id })}
+            title="Share"
+          />
+        </View>
       </>
     ),
   });
-
-  const openModal = () => {
-    setQrShow(true);
-  };
-
-  const closeModal = () => {
-    setQrShow(false);
-  };
 
   return (
     <TouchableWithoutFeedback onPress={flip}>
@@ -78,29 +75,6 @@ export default function CardScreen() {
           source={{ uri: `data:image/jpg;base64,${card.image}` }}
           resizeMode="contain"
         />
-        <Modal
-          visible={qrShow}
-          animationType={'slide'}
-          onRequestClose={closeModal}>
-          <View style={styles.modal}>
-            <Image
-              style={styles.qr}
-              source={{
-                uri: qrcode(
-                  JSON.stringify({
-                    key: 'LinguaML_Vocab',
-                    native: card.native,
-                    foreign: card.foreign,
-                  })
-                ),
-              }}
-              resizeMode="contain"
-            />
-            {Platform.OS === 'ios' && (
-              <Button onPress={closeModal} title="Close" />
-            )}
-          </View>
-        </Modal>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -124,6 +98,7 @@ const styles = StyleSheet.create({
   landscapeCard: {
     flex: 1,
   },
+  toolbar: { marginHorizontal: 8 },
   cardText: {
     fontSize: 50,
     fontWeight: 'bold',
@@ -134,21 +109,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
   },
-  modal: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   image: {
     flex: 1,
     margin: 16,
     marginTop: 200 + 32 + 16,
-  },
-  qr: {
-    flex: 1,
-    width: 200,
-    height: 200,
   },
 });

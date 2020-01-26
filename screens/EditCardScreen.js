@@ -1,9 +1,8 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { useRoute } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/core';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 import useConfirm from '../confirm';
-import { useSetCards } from '../store';
+import { useCard, useSetCards } from '../store';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -32,23 +31,46 @@ const styles = StyleSheet.create({
   },
 });
 export default function EditCardScreen() {
-  const { card } = useRoute().params;
+  const card = useCard();
   const setCards = useSetCards();
   const navigation = useNavigation();
   const confirm = useConfirm('Delete', 'This can’t be undone');
-  navigation.setOptions({
-    title: 'Edit Card',
-    headerRight: () => <Button onPress={() => {}} title="Edit" />,
-  });
+  navigation.setOptions({ title: 'Edit Card' });
   return (
     <View style={styles.wrapper}>
       <View style={styles.row}>
         <Text style={styles.label}>native</Text>
-        <TextInput style={styles.input} value={card.native} />
+        <TextInput
+          style={styles.input}
+          value={card.native}
+          onChange={e =>
+            setCards(cards => {
+              const idx = cards.findIndex(c => c.id === card.id);
+              return [
+                ...cards.slice(0, idx),
+                { ...cards[idx], native: e.nativeEvent.text },
+                ...cards.slice(idx + 1),
+              ];
+            })
+          }
+        />
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>foreign</Text>
-        <TextInput style={styles.input} value={card.foreign} />
+        <TextInput
+          style={styles.input}
+          value={card.foreign}
+          onChange={e =>
+            setCards(cards => {
+              const idx = cards.findIndex(c => c.id === card.id);
+              return [
+                ...cards.slice(0, idx),
+                { ...cards[idx], foreign: e.nativeEvent.text },
+                ...cards.slice(idx + 1),
+              ];
+            })
+          }
+        />
       </View>
       <View style={[styles.row, { justifyContent: 'center' }]}>
         <Button
