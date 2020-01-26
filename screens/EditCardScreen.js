@@ -89,15 +89,14 @@ export default function EditCardScreen() {
           />
         </View>
       </View>
-    )
-  }
-  catch (e) {
+    );
+  } catch (e) {
     console.log(e);
-    console.log("Card has been deleted");
+    console.log('Card has been deleted');
     return (
       <View style={styles.blankSlate}>
         <Text style={styles.blankSlateLabel}>No card</Text>
       </View>
-    )
+    );
   }
 }
