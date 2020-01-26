@@ -3,7 +3,6 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { NavigationNativeContainer } from '@react-navigation/native';
 import { enableScreens } from 'react-native-screens';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from './screens/HomeScreen';
 import LinksScreen from './screens/LinksScreen';
@@ -17,29 +16,7 @@ const config = Platform.select({
   default: {},
 });
 
-HomeScreen.navigationOptions = {
-  tabBarLabel: 'Home',
-};
-
-HomeScreen.path = '';
-
-const LinksStack = createNativeStackNavigator();
-function LinksStackScreen() {
-  return (
-    <LinksStack.Navigator>
-      <LinksStack.Screen
-        name="Cards"
-        component={LinksScreen}
-        options={{ headerLargeTitle: true }}
-      />
-      <LinksStack.Screen name="Card" component={CardScreen} />
-      <LinksStack.Screen name="EditCard" component={EditCardScreen} />
-    </LinksStack.Navigator>
-  );
-}
-
 const Main = createNativeStackNavigator();
-
 export default function App(props) {
   return (
     <View style={styles.container}>
@@ -47,10 +24,16 @@ export default function App(props) {
         <Main.Navigator>
           <Main.Screen
             name="Home"
-            options={{ headerShown: false }}
             component={HomeScreen}
+            options={{ headerShown: false }}
           />
-          <Main.Screen name="Cards" component={LinksStackScreen} />
+          <Main.Screen
+            name="Cards"
+            component={LinksScreen}
+            options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
+          />
+          <Main.Screen name="Card" component={CardScreen} />
+          <Main.Screen name="EditCard" component={EditCardScreen} />
         </Main.Navigator>
       </NavigationNativeContainer>
     </View>
