@@ -64,7 +64,11 @@ function HomeScreen() {
         }}
         captureAudio={false}>
         <View style={styles.controls}>
-          <View style={{ width: 50 }} />
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Settings')}
+            activeOpacity={0.75}>
+            <Text style={styles.listButton}>⚙</Text>
+          </TouchableOpacity>
           <View style={styles.shutterBorder}>
             <TouchableOpacity
               onPress={takePicture}

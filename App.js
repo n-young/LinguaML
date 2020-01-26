@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import LinksScreen from './screens/LinksScreen';
 import CardScreen from './screens/CardScreen';
+import SettingsScreen from './screens/SettingsScreen';
 import EditCardScreen from './screens/EditCardScreen';
 import { Provider } from './store';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
@@ -34,6 +35,11 @@ export default function App(props) {
               <Main.Screen
                 name="Cards"
                 component={LinksScreen}
+                options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
+              />
+              <Main.Screen
+                name="Settings"
+                component={SettingsScreen}
                 options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
               />
               <Main.Screen name="Card" component={CardScreen} />
