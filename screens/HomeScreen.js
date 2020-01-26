@@ -73,7 +73,7 @@ function HomeScreen() {
           justifyContent: 'flex-end',
         }}
         captureAudio={false}
-        onGoogleVisionBarcodesDetected={barcodeRecognized}>
+        onBarCodeRead={barcodeRecognized}>
         <View style={styles.controls}>
           <TouchableOpacity
             onPress={() => navigation.navigate('Settings')}
