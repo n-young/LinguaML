@@ -8,6 +8,7 @@ import {
   Button,
   Image,
   Modal,
+  Platform,
 } from 'react-native';
 import { useRoute } from '@react-navigation/core';
 import FlipView from '../components/FlipView';
@@ -17,7 +18,6 @@ import Tts from 'react-native-tts';
 import qrcode from 'yaqrcode';
 
 function Card({ label }) {
-
   return (
     <View
       style={[
@@ -45,7 +45,10 @@ export default function CardScreen() {
           title="Edit"
           style={{ marginRight: 16 }}
         />
-        <Button onPress={() => Tts.speak(flipped ? card.native : card.foreign)} title="Speak" />
+        <Button
+          onPress={() => Tts.speak(flipped ? card.native : card.foreign)}
+          title="Speak"
+        />
         <Button onPress={() => setQrShow(true)} title="Share" />
       </>
     ),
@@ -53,11 +56,11 @@ export default function CardScreen() {
 
   const openModal = () => {
     setQrShow(true);
-  }
+  };
 
   const closeModal = () => {
     setQrShow(false);
-  }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={flip}>
@@ -78,14 +81,24 @@ export default function CardScreen() {
         <Modal
           visible={qrShow}
           animationType={'slide'}
-          onRequestClose={() => closeModal()}
-        >
+          onRequestClose={closeModal}>
           <View style={styles.modal}>
             <Image
               style={styles.qr}
-              source={{ uri: qrcode(JSON.stringify({ key: 'LinguaML_Vocab', word: card.native })) }}
+              source={{
+                uri: qrcode(
+                  JSON.stringify({
+                    key: 'LinguaML_Vocab',
+                    native: card.native,
+                    foreign: card.foreign,
+                  })
+                ),
+              }}
               resizeMode="contain"
             />
+            {Platform.OS === 'ios' && (
+              <Button onPress={closeModal} title="Close" />
+            )}
           </View>
         </Modal>
       </View>
@@ -137,5 +150,5 @@ const styles = StyleSheet.create({
     flex: 1,
     width: 200,
     height: 200,
-  }
+  },
 });

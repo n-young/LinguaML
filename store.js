@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 
 const cardContext = React.createContext([]);
-const cardSetterContext = React.createContext(() => { });
+const cardSetterContext = React.createContext(() => {});
 const langContext = React.createContext('');
 const langSetterContext = React.createContext(() => '');
 
