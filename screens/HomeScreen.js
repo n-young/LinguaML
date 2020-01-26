@@ -70,6 +70,7 @@ function HomeScreen() {
             image: data.base64,
             id: uuid(),
             native: response,
+            lang,
             foreign: finalCardTranslate,
           });
         } catch (error) {
@@ -90,7 +91,7 @@ function HomeScreen() {
         obj.key === 'LinguaML_Vocab' &&
         !cards.some(x => x.native === obj.native && x.foreign === obj.foreign)
       ) {
-        addCard({ id: uuid(), native: obj.native, foreign: obj.foreign });
+        addCard({ id: uuid(), native: obj.native, lang, foreign: obj.foreign });
       }
     } catch {
       console.log('invalid', data);

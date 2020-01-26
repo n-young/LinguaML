@@ -5,8 +5,8 @@ import useConfirm from '../confirm';
 import langs from '../data/langs.json';
 
 export default function SettingsScreen() {
-  const langSetter = useSetLang();
-  const cardSetter = useSetCards();
+  const setLang = useSetLang();
+  const setCards = useSetCards();
   const confirm = useConfirm('Delete', 'This can’t be undone');
 
   return (
@@ -18,7 +18,7 @@ export default function SettingsScreen() {
           styles.picker,
           Platform.OS === 'ios' && { marginHorizontal: -30 },
         ]}
-        onValueChange={(itemValue, itemIndex) => langSetter(itemValue)}>
+        onValueChange={(itemValue, itemIndex) => setLang(itemValue)}>
         {Object.entries(langs).map(([code, label]) => (
           <Picker.Item key={code} label={label} value={code} />
         ))}
@@ -30,7 +30,7 @@ export default function SettingsScreen() {
           onPress={() =>
             confirm().then(ok => {
               if (ok) {
-                cardSetter([]);
+                setCards([]);
               }
             })
           }
