@@ -1,7 +1,8 @@
 import React, { useState, useContext } from 'react';
+import { useRoute } from '@react-navigation/core';
 
 const cardContext = React.createContext([]);
-const cardSetterContext = React.createContext(() => { });
+const cardSetterContext = React.createContext(() => {});
 const langContext = React.createContext('');
 const langSetterContext = React.createContext(() => '');
 
@@ -24,6 +25,11 @@ export function Provider({ children }) {
 
 export function useCards() {
   return useContext(cardContext);
+}
+
+export function useCard() {
+  const { id } = useRoute().params;
+  return useCards().find(c => c.id === id);
 }
 
 export function useSetCards() {

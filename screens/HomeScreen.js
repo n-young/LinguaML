@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   StatusBar,
   Animated,
+  Vibration,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
 import { red, orange, green } from '../constants';
-import { useSetCards } from '../store';
+import { useCards, useSetCards } from '../store';
 import uuid from 'uuid/v4';
 import Translator from './Translate';
 
@@ -21,42 +22,72 @@ function HomeScreen() {
   const cameraRef = useRef();
   const navigation = useNavigation();
   const setCards = useSetCards();
+  const cards = useCards();
 
   const loadStateRef = useRef();
   loadStateRef.current = loadState;
+
+  const addCard = card => {
+    setCards(cards => cards.concat(card));
+    setLoadState('ok');
+    setTimeout(() => setLoadState('idle'), 1500);
+    Vibration.vibrate();
+  };
 
   const takePicture = async () => {
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true };
       setLoadState('loading');
-      const data = await cameraRef.current.takePictureAsync(options);
       try {
+        const data = await cameraRef.current.takePictureAsync(options);
         const promise = callGoogleVisionApi(data.base64);
-        promise
-          .then(
-            () => setLoadState('ok'),
-            err => {
-              console.log(err);
-              setLoadState('err');
-            }
-          )
-          .finally(() => setTimeout(() => setLoadState('idle'), 3000));
         const response = await promise;
         const translate = await Translator(response, 'fr');
         console.log(response);
         console.log(translate);
         console.log(translate[0]["translations"][0]["text"]);
-        setCards(cards =>
-          cards.concat({
+
+        try {
+          const finalCardTranslate = translate[0]["translations"][0]["text"];
+          typeof finalCardTranslate !== 'undefined';
+
+
+          setCards(cards =>
+            cards.concat({
+              image: data.base64,
+              id: uuid(),
+              native: response,
+              foreign: finalCardTranslate,
+            })
+          );
+          addCard({
             image: data.base64,
             id: uuid(),
             native: response,
-            foreign: response,
-          })
-        );
+            foreign: finalCardTranslate,
+          });
+        } catch (error) {
+          throw error;
+        }
       } catch (error) {
         console.log(error);
+        setLoadState('err');
+        setTimeout(() => setLoadState('idle'), 1500);
       }
+    }
+  };
+
+  const barcodeRecognized = ({ data }) => {
+    try {
+      const obj = JSON.parse(data);
+      if (
+        obj.key === 'LinguaML_Vocab' &&
+        !cards.some(x => x.native === obj.native && x.foreign === obj.foreign)
+      ) {
+        addCard({ id: uuid(), native: obj.native, foreign: obj.foreign });
+      }
+    } catch {
+      console.log('invalid', data);
     }
   };
 
@@ -71,7 +102,8 @@ function HomeScreen() {
           display: 'flex',
           justifyContent: 'flex-end',
         }}
-        captureAudio={false}>
+        captureAudio={false}
+        onBarCodeRead={barcodeRecognized}>
         <View style={styles.controls}>
           <TouchableOpacity
             onPress={() => navigation.navigate('Settings')}
@@ -102,13 +134,6 @@ function HomeScreen() {
     </View>
   );
 }
-
-/*
-const translateText = async text => {
-  let translation = await translate.translate(text, this.state.foreignLanguage);
-  console.log('Translations:', translation);
-};
-*/
 
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(

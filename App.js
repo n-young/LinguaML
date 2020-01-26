@@ -9,15 +9,11 @@ import CardListScreen from './screens/CardListScreen';
 import CardScreen from './screens/CardScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import EditCardScreen from './screens/EditCardScreen';
+import ShowQRScreen from './screens/QRScreen';
 import { Provider } from './store';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 enableScreens();
-
-const config = Platform.select({
-  web: { headerMode: 'screen' },
-  default: {},
-});
 
 const Main = createNativeStackNavigator();
 export default function App(props) {
@@ -32,17 +28,20 @@ export default function App(props) {
                 component={HomeScreen}
                 options={{ headerShown: false }}
               />
-              <Main.Screen
-                name="Cards"
-                component={CardListScreen}
-                options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
-              />
+
               <Main.Screen
                 name="Settings"
                 component={SettingsScreen}
                 options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
               />
+
+              <Main.Screen
+                name="Cards"
+                component={CardListScreen}
+                options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
+              />
               <Main.Screen name="Card" component={CardScreen} />
+              <Main.Screen name="ShowQR" component={ShowQRScreen} />
               <Main.Screen name="EditCard" component={EditCardScreen} />
             </Main.Navigator>
           </NavigationNativeContainer>
