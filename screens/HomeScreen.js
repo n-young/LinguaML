@@ -110,9 +110,7 @@ async function callGoogleVisionApi(base64) {
 
   if (data) {
     const ret = data.responses[0].labelAnnotations[0].description;
-    console.log(
-      'LABEL: ', ret
-    );
+    console.log('LABEL: ', ret);
     // translate(ret, { from: 'en', to: this.state.foreignLanguage }).then(
     //   text => {
     //     console.log(text);
@@ -144,6 +142,10 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: 'white',
     borderRadius: 30,
+    shadowColor: 'black',
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 0 },
   },
   listButton: {
     width: 50,
