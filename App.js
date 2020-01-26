@@ -14,11 +14,6 @@ import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 enableScreens();
 
-const config = Platform.select({
-  web: { headerMode: 'screen' },
-  default: {},
-});
-
 const Main = createNativeStackNavigator();
 export default function App(props) {
   return (
