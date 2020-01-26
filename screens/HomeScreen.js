@@ -11,7 +11,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
-import { orange, green } from '../constants';
+import { red, orange, green } from '../constants';
 import { useSetCards } from '../store';
 import uuid from 'uuid/v4';
 
@@ -20,10 +20,6 @@ function HomeScreen() {
   const cameraRef = useRef();
   const navigation = useNavigation();
   const setCards = useSetCards();
-  const borderPulseRef = useRef();
-  if (!borderPulseRef.current) {
-    borderPulseRef.current = new Animated.Value(0);
-  }
 
   const loadStateRef = useRef();
   loadStateRef.current = loadState;
@@ -32,30 +28,18 @@ function HomeScreen() {
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true };
       setLoadState('loading');
-      const anim = Animated.loop(
-        Animated.timing(borderPulseRef.current, { toValue: 1, duration: 1500 })
-      );
-      let cb = () => {};
-      setTimeout(() =>
-        anim.start(function check() {
-          if (loadStateRef.current === 'loading') {
-            anim.start(check);
-          } else {
-            anim.stop();
-            requestAnimationFrame(cb);
-          }
-        })
-      );
-      await new Promise(r => setTimeout(r, 5000));
       const data = await cameraRef.current.takePictureAsync(options);
       try {
         const promise = callGoogleVisionApi(data.base64);
         promise
           .then(
-            () => (cb = () => setLoadState('ok')),
-            () => (cb = () => setLoadState('err'))
+            () => setLoadState('ok'),
+            err => {
+              console.log(err);
+              setLoadState('err');
+            }
           )
-          .finally(() => setTimeout(() => setLoadState('idle'), 5000));
+          .finally(() => setTimeout(() => setLoadState('idle'), 3000));
         const response = await promise;
         setCards(cards =>
           cards.concat({
@@ -89,29 +73,11 @@ function HomeScreen() {
             activeOpacity={0.75}>
             <Text style={styles.listButton}>⚙&#xfe0e;</Text>
           </TouchableOpacity>
-<<<<<<< Updated upstream
           <Animated.View
             style={[
               styles.shutterBorder,
               styles[`shutterBorder_${loadState}`],
-              loadState === 'loading' && {
-                padding: borderPulseRef.current.interpolate({
-                  inputRange: [0, 0.5, 1],
-                  outputRange: [5, 0, 5],
-                }),
-                borderWidth: borderPulseRef.current.interpolate({
-                  inputRange: [0, 0.5, 1],
-                  outputRange: [5, 10, 5],
-                }),
-                borderColor: borderPulseRef.current.interpolate({
-                  inputRange: [0, 0.5, 1],
-                  outputRange: [orange, '#fff', orange],
-                }),
-              },
             ]}>
-=======
-          <View style={[styles.shutterBorder]}>
->>>>>>> Stashed changes
             <TouchableOpacity
               onPress={takePicture}
               activeOpacity={0.75}
@@ -161,7 +127,7 @@ async function callGoogleVisionApi(base64) {
     }
   );
 
-  const data = await googleVisionRes.json().catch(error => console.log(error));
+  const data = await googleVisionRes.json();
   console.log(data);
 
   if (data) {
@@ -193,9 +159,9 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   shutterBorder_idle: { borderColor: orange },
-  shutterBorder_loading: {},
+  shutterBorder_loading: { borderColor: 'rgba(255, 255, 255, 0.5)' },
   shutterBorder_ok: { borderColor: green },
-  shutterBorder_err: { borderColor: 'salmon' },
+  shutterBorder_err: { borderColor: red },
   shutterButton: {
     width: 60,
     height: 60,
