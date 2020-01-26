@@ -9,7 +9,6 @@ import HomeScreen from './screens/HomeScreen';
 import LinksScreen from './screens/LinksScreen';
 import CardScreen from './screens/CardScreen';
 import EditCardScreen from './screens/EditCardScreen';
-import SettingsScreen from './screens/SettingsScreen';
 
 enableScreens();
 
@@ -39,26 +38,20 @@ function LinksStackScreen() {
   );
 }
 
-const SettingsStack = createNativeStackNavigator();
-function SettingsStackScreen() {
-  return (
-    <SettingsStack.Navigator>
-      <SettingsStack.Screen name="Settings" component={SettingsScreen} />
-    </SettingsStack.Navigator>
-  );
-}
-
-const Tab = createBottomTabNavigator();
+const Main = createNativeStackNavigator();
 
 export default function App(props) {
   return (
     <View style={styles.container}>
       <NavigationNativeContainer>
-        <Tab.Navigator>
-          <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="Cards" component={LinksStackScreen} />
-          <Tab.Screen name="Settings" component={SettingsStackScreen} />
-        </Tab.Navigator>
+        <Main.Navigator>
+          <Main.Screen
+            name="Home"
+            options={{ headerShown: false }}
+            component={HomeScreen}
+          />
+          <Main.Screen name="Cards" component={LinksStackScreen} />
+        </Main.Navigator>
       </NavigationNativeContainer>
     </View>
   );

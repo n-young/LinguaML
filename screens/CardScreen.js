@@ -57,7 +57,7 @@ export default function CardScreen() {
   const { card } = useRoute().params;
   const navigation = useNavigation();
   const [flipped, flip] = useReducer(f => !f, false);
-  useNavigation().setOptions({
+  navigation.setOptions({
     headerRight: () => (
       <Button
         onPress={() => navigation.navigate('EditCard', { card })}
