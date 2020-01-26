@@ -7,6 +7,7 @@ import {
   StatusBar,
   Animated,
   Vibration,
+  ActivityIndicator,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -45,10 +46,10 @@ function HomeScreen() {
         const response = await promise;
         const translate = await Translator(response, lang);
         console.log(response);
-        console.log(translate[0]["translations"][0]["text"]);
+        console.log(translate[0].translations[0].text);
 
         try {
-          const finalCardTranslate = translate[0]["translations"][0]["text"];
+          const finalCardTranslate = translate[0].translations[0].text;
           typeof finalCardTranslate !== 'undefined';
           addCard({
             image: data.base64,
@@ -121,6 +122,9 @@ function HomeScreen() {
           </TouchableOpacity>
         </View>
       </RNCamera>
+      <View style={styles.spinner} pointerEvents="none">
+        <ActivityIndicator animating={loadState === 'loading'} size="large" />
+      </View>
     </View>
   );
 }
@@ -128,7 +132,7 @@ function HomeScreen() {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-    Environment.GOOGLE_CLOUD_VISION_API_KEY,
+      Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({
@@ -192,6 +196,14 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
     elevation: 12,
+  },
+  spinner: {
+    position: 'absolute',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
   listButton: {
     width: 50,
