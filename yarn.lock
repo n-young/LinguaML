@@ -1368,6 +1368,11 @@
     "@react-navigation/core" "^5.0.0-alpha.37"
     shortid "^2.2.15"
 
+"@rnhooks/device-orientation@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@rnhooks/device-orientation/-/device-orientation-0.0.1.tgz#18b153c0b20d5929989e75ad3ef6cadd6568d5d6"
+  integrity sha512-70MgeOqSpm3/NvhFXOhAv4K2Q17/nK3cLS5H3XpjPatsbYGmVSY6HafJvm0FqFc2BQsshyiYtILycWrJUpbm0Q==
+
 "@sinonjs/commons@^1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.7.0.tgz#f90ffc52a2e519f018b13b6c4da03cbff36ebed6"

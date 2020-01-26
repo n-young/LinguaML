@@ -14,7 +14,7 @@ export default function CardListScreen() {
     <FlatList
       style={styles.container}
       data={[
-        { image: 'id-e-f-g', id: '1', native: 'abc', foreign: 'def' },
+        { image: 'id-e-f-g', id: '1', native: 'Hello', foreign: 'Bonjour' },
         { image: 'id-e-f-g', id: '2', native: 'abc', foreign: 'def' },
         { image: 'id-e-f-g', id: '3', native: 'abc', foreign: 'def' },
       ]}
