@@ -9,16 +9,13 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useCards } from '../store';
 
 export default function CardListScreen() {
   return (
     <FlatList
       style={styles.container}
-      data={[
-        { image: 'id-e-f-g', id: '1', native: 'Hello', foreign: 'Bonjour' },
-        { image: 'id-e-f-g', id: '2', native: 'abc', foreign: 'def' },
-        { image: 'id-e-f-g', id: '3', native: 'abc', foreign: 'def' },
-      ]}
+      data={useCards()}
       keyExtractor={({ id }) => id}
       ItemSeparatorComponent={
         Platform.OS !== 'android' &&

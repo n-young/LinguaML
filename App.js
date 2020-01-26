@@ -8,6 +8,7 @@ import HomeScreen from './screens/HomeScreen';
 import LinksScreen from './screens/LinksScreen';
 import CardScreen from './screens/CardScreen';
 import EditCardScreen from './screens/EditCardScreen';
+import { Provider } from './store';
 
 enableScreens();
 
@@ -19,24 +20,26 @@ const config = Platform.select({
 const Main = createNativeStackNavigator();
 export default function App(props) {
   return (
-    <View style={styles.container}>
-      <NavigationNativeContainer>
-        <Main.Navigator>
-          <Main.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ headerShown: false }}
-          />
-          <Main.Screen
-            name="Cards"
-            component={LinksScreen}
-            options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
-          />
-          <Main.Screen name="Card" component={CardScreen} />
-          <Main.Screen name="EditCard" component={EditCardScreen} />
-        </Main.Navigator>
-      </NavigationNativeContainer>
-    </View>
+    <Provider>
+      <View style={styles.container}>
+        <NavigationNativeContainer>
+          <Main.Navigator>
+            <Main.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ headerShown: false }}
+            />
+            <Main.Screen
+              name="Cards"
+              component={LinksScreen}
+              options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
+            />
+            <Main.Screen name="Card" component={CardScreen} />
+            <Main.Screen name="EditCard" component={EditCardScreen} />
+          </Main.Navigator>
+        </NavigationNativeContainer>
+      </View>
+    </Provider>
   );
 }
 
