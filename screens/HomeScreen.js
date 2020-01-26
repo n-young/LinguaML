@@ -38,6 +38,7 @@ function HomeScreen() {
         const response = await callGoogleVisionApi(data.base64).finally(() =>
           setUploading(false)
         );
+        console.log(data.base64)
         setCards(cards.concat({
           image: data.base64,
           id: cards.length,

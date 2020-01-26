@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   Easing,
   Button,
+  Image,
 } from 'react-native';
 import { useRoute } from '@react-navigation/core';
 import FlipView from '../components/FlipView';
@@ -37,6 +38,10 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
   },
+  image: {
+    width: '100%',
+    backgroundColor: 'black',
+  }
 });
 
 function Card({ label }) {
@@ -75,6 +80,7 @@ export default function CardScreen() {
           front={<Card label={card.foreign} />}
           back={<Card label={card.native} />}
         />
+        <Image style={styles.image} source={{ uri: `data:image/jpg;base64,${card.image}` }} />
       </View>
     </TouchableWithoutFeedback>
   );
