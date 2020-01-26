@@ -39,7 +39,7 @@ function HomeScreen() {
               setLoadState('err');
             }
           )
-          .finally(() => setTimeout(() => setLoadState('idle'), 3000));
+          .finally(() => setTimeout(() => setLoadState('idle'), 1500));
         const response = await promise;
         setCards(cards =>
           cards.concat({
@@ -55,6 +55,12 @@ function HomeScreen() {
     }
   };
 
+  const barcodeRecognized = ({ barcodes }) => {
+    barcodes.forEach(barcode => {
+      console.log(barcode);
+    })
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar hidden />
@@ -66,7 +72,8 @@ function HomeScreen() {
           display: 'flex',
           justifyContent: 'flex-end',
         }}
-        captureAudio={false}>
+        captureAudio={false}
+        onGoogleVisionBarcodesDetected={barcodeRecognized}>
         <View style={styles.controls}>
           <TouchableOpacity
             onPress={() => navigation.navigate('Settings')}
@@ -98,17 +105,10 @@ function HomeScreen() {
   );
 }
 
-/*
-const translateText = async text => {
-  let translation = await translate.translate(text, this.state.foreignLanguage);
-  console.log('Translations:', translation);
-};
-*/
-
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-      Environment.GOOGLE_CLOUD_VISION_API_KEY,
+    Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({

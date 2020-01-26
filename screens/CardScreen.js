@@ -7,6 +7,7 @@ import {
   Easing,
   Button,
   Image,
+  Modal,
 } from 'react-native';
 import { useRoute } from '@react-navigation/core';
 import FlipView from '../components/FlipView';
@@ -16,7 +17,6 @@ import Tts from 'react-native-tts';
 import qrcode from 'yaqrcode';
 
 function Card({ label }) {
-  const [qrShow, setQrShow] = React.useState(false);
 
   return (
     <View
@@ -35,6 +35,8 @@ export default function CardScreen() {
   const { card } = useRoute().params;
   const navigation = useNavigation();
   const [flipped, flip] = useReducer(f => !f, false);
+  const [qrShow, setQrShow] = React.useState(false);
+
   navigation.setOptions({
     headerRight: () => (
       <>
@@ -44,10 +46,19 @@ export default function CardScreen() {
           style={{ marginRight: 16 }}
         />
         <Button onPress={() => Tts.speak(flipped ? card.native : card.foreign)} title="Speak" />
-        <Button onPress={setQrShow(true)} title="Share" />
+        <Button onPress={() => setQrShow(true)} title="Share" />
       </>
     ),
   });
+
+  const openModal = () => {
+    setQrShow(true);
+  }
+
+  const closeModal = () => {
+    setQrShow(false);
+  }
+
   return (
     <TouchableWithoutFeedback onPress={flip}>
       <View style={styles.wrapper}>
@@ -64,13 +75,19 @@ export default function CardScreen() {
           source={{ uri: `data:image/jpg;base64,${card.image}` }}
           resizeMode="contain"
         />
-        <View style={styles.qr}>
-          <Image
-            style={styles.image}
-            source={{ uri: `data:image/jpg;base64,${qrcode('Hello World')}` }}
-            resizeMode="contain"
-          />
-        </View>
+        <Modal
+          visible={qrShow}
+          animationType={'slide'}
+          onRequestClose={() => closeModal()}
+        >
+          <View style={styles.wrapper}>
+            <Image
+              style={styles.qr}
+              source={{ uri: qrcode(JSON.stringify({ key: 'LinguaML_Vocab', word: card.native })) }}
+              resizeMode="contain"
+            />
+          </View>
+        </Modal>
       </View>
     </TouchableWithoutFeedback>
   );
@@ -103,6 +120,8 @@ const styles = StyleSheet.create({
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   image: {
     flex: 1,
@@ -110,7 +129,8 @@ const styles = StyleSheet.create({
     marginTop: 200 + 32 + 16,
   },
   qr: {
-    display: 'none',
-    top: '10%',
+    flex: 1,
+    width: 200,
+    height: 200,
   }
 });
