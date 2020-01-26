@@ -7,44 +7,48 @@ const cardSetterContext = React.createContext();
 const langContext = React.createContext();
 const langSetterContext = React.createContext();
 
-async function putCards(elt) {
+async function put(key, value) {
   try {
-    await AsyncStorage.setItem('cards', JSON.stringify(elt));
-    console.log('successfully saved cards');
+    await AsyncStorage.setItem(key, JSON.stringify(value));
   } catch (error) {
     console.log(error);
   }
 }
 
-async function pullCards() {
+async function pull(key) {
   try {
-    const value = await AsyncStorage.getItem('cards');
-    if (value !== null) {
+    const value = await AsyncStorage.getItem(key);
+    if (value != null) {
       return JSON.parse(value);
     }
   } catch (error) {
     console.log(error);
   }
-  return [];
 }
 
 export function Provider({ children }) {
   const [cards, setCards] = useState(null);
-  const [language, setLanguage] = useState('fr');
+  const [lang, setLang] = useState('fr');
   useEffect(() => {
-    pullCards().then(setCards);
+    pull('cards').then(c => setCards(c || []));
+    pull('lang').then(l => setLang(l || 'fr'));
   }, []);
   useEffect(() => {
     if (cards) {
-      putCards(cards);
+      put('cards', cards);
     }
   }, [cards]);
+  useEffect(() => {
+    if (lang) {
+      put('lang', lang);
+    }
+  }, [lang]);
 
   return (
     <cardContext.Provider value={cards || []}>
       <cardSetterContext.Provider value={setCards}>
-        <langContext.Provider value={language}>
-          <langSetterContext.Provider value={setLanguage}>
+        <langContext.Provider value={lang}>
+          <langSetterContext.Provider value={setLang}>
             {children}
           </langSetterContext.Provider>
         </langContext.Provider>

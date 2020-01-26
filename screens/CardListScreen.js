@@ -87,8 +87,8 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderBottomWidth: 0,
     borderLeftWidth: 0,
-    width: 15,
-    height: 15,
+    width: 10,
+    height: 10,
     transform: [{ rotateZ: '45deg' }],
   },
 });
