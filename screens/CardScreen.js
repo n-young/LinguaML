@@ -66,25 +66,35 @@ export default function CardScreen() {
     ),
   });
 
-  return (
-    <TouchableWithoutFeedback onPress={flip}>
-      <View style={styles.wrapper}>
-        <FlipView
-          isFlipped={flipped}
-          flipDuration={250}
-          style={{ zIndex: 1 }}
-          flipEasing={Easing.linear}
-          front={<Card label={card.foreign} />}
-          back={<Card label={card.native} />}
-        />
-        <Image
-          style={styles.image}
-          source={{ uri: `data:image/jpg;base64,${card.image}` }}
-          resizeMode="contain"
-        />
+  try {
+    return (
+      <TouchableWithoutFeedback onPress={flip}>
+        <View style={styles.wrapper}>
+          <FlipView
+            isFlipped={flipped}
+            flipDuration={250}
+            style={{ zIndex: 1 }}
+            flipEasing={Easing.linear}
+            front={<Card label={card.foreign} />}
+            back={<Card label={card.native} />}
+          />
+          <Image
+            style={styles.image}
+            source={{ uri: `data:image/jpg;base64,${card.image}` }}
+            resizeMode="contain"
+          />
+        </View>
+      </TouchableWithoutFeedback>
+    )
+  } catch (e) {
+    console.log(e);
+    console.log("Card has eben deleted");
+    return (
+      <View style={styles.blankSlate}>
+        <Text style={styles.blankSlateLabel}>No card</Text>
       </View>
-    </TouchableWithoutFeedback>
-  );
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -121,5 +131,16 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 16,
     marginTop: 200 + 32 + 16,
+  },
+  blankSlate: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  blankSlateLabel: {
+    fontSize: 50,
+    fontWeight: '300',
+    opacity: 0.33,
   },
 });

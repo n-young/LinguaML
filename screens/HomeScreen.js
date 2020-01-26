@@ -38,7 +38,7 @@ function HomeScreen() {
 
   const takePicture = async () => {
     if (cameraRef.current) {
-      const options = { quality: 0.5, doNotSave: true, base64: true };
+      const options = { quality: 0.5, doNotSave: false, base64: true };
       setLoadState('loading');
       try {
         const data = await cameraRef.current.takePictureAsync(options);
@@ -132,7 +132,7 @@ function HomeScreen() {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-      Environment.GOOGLE_CLOUD_VISION_API_KEY,
+    Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({
@@ -156,12 +156,6 @@ async function callGoogleVisionApi(base64) {
 
   if (data) {
     const ret = data.responses[0].labelAnnotations[0].description;
-    //console.log('LABEL: ', ret);
-    // translate(ret, { from: 'en', to: this.state.foreignLanguage }).then(
-    //   text => {
-    //     console.log(text);
-    //   }
-    // );
     return ret;
   }
 }
