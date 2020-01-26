@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,68 @@ import FlipView from '../components/FlipView';
 import { useNavigation } from '@react-navigation/native';
 import useDeviceOrientation from '@rnhooks/device-orientation';
 import Tts from 'react-native-tts';
+import qrcode from 'yaqrcode';
+
+function Card({ label }) {
+  const [qrShow, setQrShow] = React.useState(false);
+
+  return (
+    <View
+      style={[
+        styles.card,
+        useDeviceOrientation() === 'landscape'
+          ? styles.landscapeCard
+          : styles.portraitCard,
+      ]}>
+      <Text style={styles.cardText}>{label}</Text>
+    </View>
+  );
+}
+
+export default function CardScreen() {
+  const { card } = useRoute().params;
+  const navigation = useNavigation();
+  const [flipped, flip] = useReducer(f => !f, false);
+  navigation.setOptions({
+    headerRight: () => (
+      <>
+        <Button
+          onPress={() => navigation.navigate('EditCard', { card })}
+          title="Edit"
+          style={{ marginRight: 16 }}
+        />
+        <Button onPress={() => Tts.speak(flipped ? card.native : card.foreign)} title="Speak" />
+        <Button onPress={setQrShow(true)} title="Share" />
+      </>
+    ),
+  });
+  return (
+    <TouchableWithoutFeedback onPress={flip}>
+      <View style={styles.wrapper}>
+        <FlipView
+          isFlipped={flipped}
+          flipDuration={250}
+          style={{ zIndex: 1 }}
+          flipEasing={Easing.linear}
+          front={<Card label={card.foreign} />}
+          back={<Card label={card.native} />}
+        />
+        <Image
+          style={styles.image}
+          source={{ uri: `data:image/jpg;base64,${card.image}` }}
+          resizeMode="contain"
+        />
+        <View style={styles.qr}>
+          <Image
+            style={styles.image}
+            source={{ uri: `data:image/jpg;base64,${qrcode('Hello World')}` }}
+            resizeMode="contain"
+          />
+        </View>
+      </View>
+    </TouchableWithoutFeedback>
+  );
+}
 
 const styles = StyleSheet.create({
   card: {
@@ -47,55 +109,8 @@ const styles = StyleSheet.create({
     margin: 16,
     marginTop: 200 + 32 + 16,
   },
+  qr: {
+    display: 'none',
+    top: '10%',
+  }
 });
-
-function Card({ label }) {
-  return (
-    <View
-      style={[
-        styles.card,
-        useDeviceOrientation() === 'landscape'
-          ? styles.landscapeCard
-          : styles.portraitCard,
-      ]}>
-      <Text style={styles.cardText}>{label}</Text>
-    </View>
-  );
-}
-
-export default function CardScreen() {
-  const { card } = useRoute().params;
-  const navigation = useNavigation();
-  const [flipped, flip] = useReducer(f => !f, false);
-  navigation.setOptions({
-    headerRight: () => (
-      <>
-        <Button
-          onPress={() => navigation.navigate('EditCard', { card })}
-          title="Edit"
-          style={{ marginRight: 16 }}
-        />
-        <Button onPress={() => Tts.speak(flipped ? card.native : card.foreign)} title="Speak" />
-      </>
-    ),
-  });
-  return (
-    <TouchableWithoutFeedback onPress={flip}>
-      <View style={styles.wrapper}>
-        <FlipView
-          isFlipped={flipped}
-          flipDuration={250}
-          style={{ zIndex: 1 }}
-          flipEasing={Easing.linear}
-          front={<Card label={card.foreign} />}
-          back={<Card label={card.native} />}
-        />
-        <Image
-          style={styles.image}
-          source={{ uri: `data:image/jpg;base64,${card.image}` }}
-          resizeMode="contain"
-        />
-      </View>
-    </TouchableWithoutFeedback>
-  );
-}

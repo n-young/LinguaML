@@ -89,6 +89,7 @@ function HomeScreen() {
             activeOpacity={0.75}>
             <Text style={styles.listButton}>⚙&#xfe0e;</Text>
           </TouchableOpacity>
+<<<<<<< Updated upstream
           <Animated.View
             style={[
               styles.shutterBorder,
@@ -108,6 +109,9 @@ function HomeScreen() {
                 }),
               },
             ]}>
+=======
+          <View style={[styles.shutterBorder]}>
+>>>>>>> Stashed changes
             <TouchableOpacity
               onPress={takePicture}
               activeOpacity={0.75}
