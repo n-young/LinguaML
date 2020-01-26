@@ -1,13 +1,8 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Picker,
-  StyleSheet,
-  Button,
-} from 'react-native';
-import { useCards, useSetCards, useLang, useSetLang } from '../store';
+import React from 'react';
+import { View, Text, Picker, StyleSheet, Button, Platform } from 'react-native';
+import { useSetCards, useLang, useSetLang } from '../store';
 import useConfirm from '../confirm';
+import langs from '../data/langs.json';
 
 export default function SettingsScreen() {
   const langSetter = useSetLang();
@@ -19,28 +14,32 @@ export default function SettingsScreen() {
       <Text style={styles.settingsLabel}>What language are you learning?</Text>
       <Picker
         selectedValue={useLang()}
-        style={styles.picker}
-        onValueChange={(itemValue, itemIndex) =>
-          langSetter(itemValue)
-        }>
-        <Picker.Item label="English" value="en" />
-        <Picker.Item label="French" value="fr" />
-        <Picker.Item label="Spanish" value="es" />
-        <Picker.Item label="Japanese" value="ja" />
-        <Picker.Item label="Chinese" value="zh" />
-        <Picker.Item label="Korean" value="ko" />
+        style={[
+          styles.picker,
+          Platform.OS === 'ios' && { marginHorizontal: -30 },
+        ]}
+        onValueChange={(itemValue, itemIndex) => langSetter(itemValue)}>
+        {Object.entries(langs).map(([code, label]) => (
+          <Picker.Item key={code} label={label} value={code} />
+        ))}
       </Picker>
       <Text style={styles.settingsLabel}>Want a redo?</Text>
-      <Button onPress={() =>
-        confirm().then(ok => {
-          if (ok) { cardSetter([]) }
-        })
-      } title="Delete all cards" />
-    </View >
-  )
+      <View style={{ margin: 20 }}>
+        <Button
+          color="red"
+          onPress={() =>
+            confirm().then(ok => {
+              if (ok) {
+                cardSetter([]);
+              }
+            })
+          }
+          title="Delete all cards"
+        />
+      </View>
+    </View>
+  );
 }
-
-
 
 SettingsScreen.navigationOptions = {
   title: 'Settings',
@@ -55,6 +54,7 @@ const styles = StyleSheet.create({
   settingsLabel: {
     fontSize: 25,
     fontWeight: '300',
+    textAlign: 'center',
   },
   picker: {
     fontSize: 10,
@@ -63,8 +63,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 30,
-    paddingRight: 20,
     paddingVertical: 8,
     backgroundColor: '#fff',
   },

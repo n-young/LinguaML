@@ -67,7 +67,7 @@ function HomeScreen() {
           <TouchableOpacity
             onPress={() => navigation.navigate('Settings')}
             activeOpacity={0.75}>
-            <Text style={styles.listButton}>⚙</Text>
+            <Text style={styles.listButton}>⚙&#xfe0e;</Text>
           </TouchableOpacity>
           <View style={styles.shutterBorder}>
             <TouchableOpacity
