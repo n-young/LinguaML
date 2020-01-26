@@ -38,7 +38,7 @@ function HomeScreen() {
 
   const takePicture = async () => {
     if (cameraRef.current) {
-      const options = { quality: 0.5, doNotSave: false, base64: true };
+      const options = { quality: 0.5, doNotSave: true, base64: true };
       setLoadState('loading');
       try {
         const data = await cameraRef.current.takePictureAsync(options);
@@ -142,8 +142,8 @@ async function callGoogleVisionApi(base64) {
               content: base64,
             },
             features: [
-              { type: 'LABEL_DETECTION', maxResults: 1 },
-              { type: 'TEXT_DETECTION', maxResults: 1 },
+              { type: 'OBJECT_LOCALIZATION', maxResults: 1 },
+              { type: 'LABEL_DETECTION', maxResults: 1 }
             ],
           },
         ],
@@ -152,11 +152,16 @@ async function callGoogleVisionApi(base64) {
   );
 
   const data = await googleVisionRes.json();
-  console.log(data);
+  console.log(data.responses[0].localizedObjectAnnotations[0]);
+  console.log(data.responses[0].labelAnnotations[0]);
 
   if (data) {
-    const ret = data.responses[0].labelAnnotations[0].description;
-    return ret;
+    const objRes = data.responses[0].localizedObjectAnnotations[0];
+    const labRes = data.responses[0].labelAnnotations[0];
+    if (objRes.score > labRes.score) {
+      return objRes.name;
+    }
+    return labRes.description;
   }
 }
 
