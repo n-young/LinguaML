@@ -1,8 +1,8 @@
 import React, { useReducer } from 'react';
 import {
   StyleSheet,
-  Text,
   View,
+  Text,
   TouchableWithoutFeedback,
   Easing,
   Button,
@@ -11,24 +11,10 @@ import {
 import { useNavigation } from '@react-navigation/core';
 import FlipView from '../components/FlipView';
 import { useCard, useLang } from '../store';
-import useDeviceOrientation from '@rnhooks/device-orientation';
 import Tts from 'react-native-tts';
+import Card from '../components/Card';
 
 Tts.setIgnoreSilentSwitch('ignore');
-
-function Card({ label }) {
-  return (
-    <View
-      style={[
-        styles.card,
-        useDeviceOrientation() === 'landscape'
-          ? styles.landscapeCard
-          : styles.portraitCard,
-      ]}>
-      <Text style={styles.cardText}>{label}</Text>
-    </View>
-  );
-}
 
 export default function CardScreen() {
   const card = useCard();
@@ -78,59 +64,43 @@ export default function CardScreen() {
             front={<Card label={card.foreign} />}
             back={<Card label={card.native} />}
           />
-          <Image
-            style={styles.image}
-            source={{ uri: `data:image/jpg;base64,${card.image}` }}
-            resizeMode="contain"
-          />
+          <View style={styles.imageWrap}>
+            <Image
+              style={styles.image}
+              source={{ uri: `data:image/jpg;base64,${card.image}` }}
+              resizeMode="contain"
+            />
+          </View>
         </View>
       </TouchableWithoutFeedback>
-    )
+    );
   } catch (e) {
     console.log(e);
-    console.log("Card has eben deleted");
+    console.log('Card has eben deleted');
     return (
       <View style={styles.blankSlate}>
         <Text style={styles.blankSlateLabel}>No card</Text>
       </View>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
-  card: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    margin: 16,
-    shadowColor: 'black',
-    shadowRadius: 20,
-    shadowOffset: { width: 10, height: 10 },
-    shadowOpacity: 0.2,
-    elevation: 12,
-  },
-  portraitCard: {
-    height: 200,
-  },
-  landscapeCard: {
-    flex: 1,
-  },
   toolbar: { marginHorizontal: 8 },
-  cardText: {
-    fontSize: 50,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
   wrapper: {
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
   },
-  image: {
+  imageWrap: {
     flex: 1,
     margin: 16,
     marginTop: 200 + 32 + 16,
+    display: 'flex',
+  },
+  image: {
+    height: '100%',
+    borderRadius: 8,
   },
   blankSlate: {
     flex: 1,
