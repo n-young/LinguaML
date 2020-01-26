@@ -74,7 +74,9 @@ function HomeScreen() {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Cards')}
+            onPress={() =>
+              navigation.navigate({ name: 'Cards', key: 'card-list' })
+            }
             activeOpacity={0.75}>
             <Text style={styles.listButton}>☰</Text>
           </TouchableOpacity>
@@ -94,7 +96,7 @@ const translateText = async text => {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-    Environment.GOOGLE_CLOUD_VISION_API_KEY,
+      Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({
