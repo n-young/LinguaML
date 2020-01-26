@@ -5,12 +5,12 @@ import { enableScreens } from 'react-native-screens';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from './screens/HomeScreen';
-import LinksScreen from './screens/LinksScreen';
+import CardListScreen from './screens/CardListScreen';
 import CardScreen from './screens/CardScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import EditCardScreen from './screens/EditCardScreen';
 import { Provider } from './store';
-import { ActionSheetProvider } from '@expo/react-native-action-sheet'
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 enableScreens();
 
@@ -34,7 +34,7 @@ export default function App(props) {
               />
               <Main.Screen
                 name="Cards"
-                component={LinksScreen}
+                component={CardListScreen}
                 options={{ headerLargeTitle: true, headerBackTitle: 'Camera' }}
               />
               <Main.Screen
