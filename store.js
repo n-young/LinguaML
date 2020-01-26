@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import { useRoute } from '@react-navigation/core';
 
 const cardContext = React.createContext([]);
