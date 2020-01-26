@@ -1,22 +1,22 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AsyncStorage } from 'react-native';
 import { useRoute } from '@react-navigation/core';
 
 const cardContext = React.createContext([]);
-const cardSetterContext = React.createContext(() => { });
+const cardSetterContext = React.createContext(() => {});
 const langContext = React.createContext('');
 const langSetterContext = React.createContext(() => '');
 
-export async function putCards(elt) {
+async function putCards(elt) {
   try {
     await AsyncStorage.setItem('cards', JSON.stringify(elt));
-    console.log("successfully saved cards");
+    console.log('successfully saved cards');
   } catch (error) {
     console.log(error);
   }
-};
+}
 
-export async function pullCards() {
+async function pullCards() {
   try {
     const value = await AsyncStorage.getItem('cards');
     if (value !== null) {
@@ -24,17 +24,28 @@ export async function pullCards() {
       return JSON.parse(value);
     }
   } catch (error) {
-    console.log(err);
+    console.log(error);
   }
   return [];
-};
+}
 
 export function Provider({ children }) {
-  const [cards, setCards] = useState(() => pullCards());
+  const [cards, setCards] = useState(null);
   const [language, setLanguage] = useState('fr');
+  useEffect(() => {
+    pullCards().then(cards => {
+      console.log('cards', cards);
+      setCards(cards);
+    });
+  }, []);
+  useEffect(() => {
+    if (cards) {
+      putCards(cards);
+    }
+  }, [cards]);
 
   return (
-    <cardContext.Provider value={cards}>
+    <cardContext.Provider value={cards || []}>
       <cardSetterContext.Provider value={setCards}>
         <langContext.Provider value={language}>
           <langSetterContext.Provider value={setLanguage}>

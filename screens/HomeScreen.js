@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
 import { red, orange, green } from '../constants';
-import { useCards, useSetCards, useLang, useSetLang, putCards, pullCards } from '../store';
+import { useCards, useSetCards, useLang } from '../store';
 import uuid from 'uuid/v4';
 import Translator from './Translate';
 import Card from '../components/Card';
@@ -51,10 +51,6 @@ function HomeScreen() {
         duration: 1,
       }),
     ]).start();
-    putCards(cards);
-    setLoadState('ok');
-    setTimeout(() => setLoadState('idle'), 1500);
-    Vibration.vibrate();
   };
 
   const takePicture = async () => {
@@ -185,7 +181,7 @@ function HomeScreen() {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-    Environment.GOOGLE_CLOUD_VISION_API_KEY,
+      Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({
@@ -196,7 +192,7 @@ async function callGoogleVisionApi(base64) {
             },
             features: [
               { type: 'OBJECT_LOCALIZATION', maxResults: 1 },
-              { type: 'LABEL_DETECTION', maxResults: 1 }
+              { type: 'LABEL_DETECTION', maxResults: 1 },
             ],
           },
         ],
