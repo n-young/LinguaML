@@ -62,8 +62,6 @@ function HomeScreen() {
         const promise = callGoogleVisionApi(data.base64);
         const response = await promise;
         const translate = await Translator(response, lang);
-        console.log(response);
-        console.log(translate[0].translations[0].text);
 
         try {
           const finalCardTranslate = translate[0].translations[0].text;
@@ -201,8 +199,6 @@ async function callGoogleVisionApi(base64) {
   );
 
   const data = await googleVisionRes.json();
-  console.log(data.responses[0].localizedObjectAnnotations[0]);
-  console.log(data.responses[0].labelAnnotations[0]);
 
   if (data) {
     const objRes = data.responses[0].localizedObjectAnnotations[0];

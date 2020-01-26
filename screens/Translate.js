@@ -40,14 +40,10 @@ async function Translator(text, lang) {
     method: 'POST',
   };
 
-  console.log(endpoint + '&from=en&to=' + lang);
   const output = await fetch(
     endpoint + '&from=en&to=' + lang,
     optionsFetch
-  ).then(async result => {
-    console.log(result.status);
-    return await result.json();
-  });
+  ).then(res => res.json());
 
   return output;
   /*

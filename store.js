@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { useRoute } from '@react-navigation/core';
 
 const cardContext = React.createContext([]);
-const cardSetterContext = React.createContext(() => { });
+const cardSetterContext = React.createContext(() => {});
 const langContext = React.createContext('');
 const langSetterContext = React.createContext(() => '');
 
@@ -20,7 +20,6 @@ async function pullCards() {
   try {
     const value = await AsyncStorage.getItem('cards');
     if (value !== null) {
-      console.log(value);
       return JSON.parse(value);
     }
   } catch (error) {
@@ -33,10 +32,7 @@ export function Provider({ children }) {
   const [cards, setCards] = useState(null);
   const [language, setLanguage] = useState('fr');
   useEffect(() => {
-    pullCards().then(cards => {
-      console.log('cards', cards);
-      setCards(cards);
-    });
+    pullCards().then(setCards);
   }, []);
   useEffect(() => {
     if (cards) {
