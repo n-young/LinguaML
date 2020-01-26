@@ -1,42 +1,62 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   StatusBar,
-  ActivityIndicator,
-  Button,
-  Clipboard,
-  FlatList,
-  Image,
-  Share,
-  ScrollView,
+  Animated,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
-import firebase from '../config/firebase';
-import { orange } from '../constants';
-import { useCards, useSetCards } from '../store';
+import { orange, green } from '../constants';
+import { useSetCards } from '../store';
 import uuid from 'uuid/v4';
 
 function HomeScreen() {
-  const [uploading, setUploading] = useState(false);
+  const [loadState, setLoadState] = useState('idle');
   const cameraRef = useRef();
   const navigation = useNavigation();
   const setCards = useSetCards();
+  const borderPulseRef = useRef();
+  if (!borderPulseRef.current) {
+    borderPulseRef.current = new Animated.Value(0);
+  }
+
+  const loadStateRef = useRef();
+  loadStateRef.current = loadState;
 
   const takePicture = async () => {
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true };
+      setLoadState('loading');
+      const anim = Animated.loop(
+        Animated.timing(borderPulseRef.current, { toValue: 1, duration: 1500 })
+      );
+      let cb = () => {};
+      setTimeout(() =>
+        anim.start(function check() {
+          if (loadStateRef.current === 'loading') {
+            anim.start(check);
+          } else {
+            anim.stop();
+            requestAnimationFrame(cb);
+          }
+        })
+      );
+      await new Promise(r => setTimeout(r, 5000));
       const data = await cameraRef.current.takePictureAsync(options);
-      setUploading(true);
       try {
-        const response = await callGoogleVisionApi(data.base64).finally(() =>
-          setUploading(false)
-        );
+        const promise = callGoogleVisionApi(data.base64);
+        promise
+          .then(
+            () => (cb = () => setLoadState('ok')),
+            () => (cb = () => setLoadState('err'))
+          )
+          .finally(() => setTimeout(() => setLoadState('idle'), 5000));
+        const response = await promise;
         setCards(cards =>
           cards.concat({
             image: data.base64,
@@ -69,14 +89,32 @@ function HomeScreen() {
             activeOpacity={0.75}>
             <Text style={styles.listButton}>⚙&#xfe0e;</Text>
           </TouchableOpacity>
-          <View style={styles.shutterBorder}>
+          <Animated.View
+            style={[
+              styles.shutterBorder,
+              styles[`shutterBorder_${loadState}`],
+              loadState === 'loading' && {
+                padding: borderPulseRef.current.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [5, 0, 5],
+                }),
+                borderWidth: borderPulseRef.current.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [5, 10, 5],
+                }),
+                borderColor: borderPulseRef.current.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [orange, '#fff', orange],
+                }),
+              },
+            ]}>
             <TouchableOpacity
               onPress={takePicture}
               activeOpacity={0.75}
               style={styles.capture}>
               <View style={styles.shutterButton} />
             </TouchableOpacity>
-          </View>
+          </Animated.View>
           <TouchableOpacity
             onPress={() =>
               navigation.navigate({ name: 'Cards', key: 'card-list' })
@@ -100,7 +138,7 @@ const translateText = async text => {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-    Environment.GOOGLE_CLOUD_VISION_API_KEY,
+      Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({
@@ -147,15 +185,18 @@ const styles = StyleSheet.create({
   },
   shutterBorder: {
     borderWidth: 5,
-    borderColor: orange,
     padding: 5,
-    borderRadius: 40,
+    borderRadius: 100,
   },
+  shutterBorder_idle: { borderColor: orange },
+  shutterBorder_loading: {},
+  shutterBorder_ok: { borderColor: green },
+  shutterBorder_err: { borderColor: 'salmon' },
   shutterButton: {
     width: 60,
     height: 60,
     backgroundColor: 'white',
-    borderRadius: 30,
+    borderRadius: 100,
     shadowColor: 'black',
     shadowOpacity: 0.5,
     shadowRadius: 10,
