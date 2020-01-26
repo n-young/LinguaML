@@ -4,11 +4,16 @@ import {
   Text,
   Picker,
   StyleSheet,
+  Button,
 } from 'react-native';
-import { useLang, useSetLang } from '../store';
+import { useCards, useSetCards, useLang, useSetLang } from '../store';
+import useConfirm from '../confirm';
 
 export default function SettingsScreen() {
-  const setter = useSetLang();
+  const langSetter = useSetLang();
+  const cardSetter = useSetCards();
+  const confirm = useConfirm('Delete', 'This can’t be undone');
+
   return (
     <View style={styles.container}>
       <Text style={styles.settingsLabel}>What language are you learning?</Text>
@@ -16,7 +21,7 @@ export default function SettingsScreen() {
         selectedValue={useLang()}
         style={styles.picker}
         onValueChange={(itemValue, itemIndex) =>
-          setter(itemValue)
+          langSetter(itemValue)
         }>
         <Picker.Item label="English" value="en" />
         <Picker.Item label="French" value="fr" />
@@ -25,9 +30,17 @@ export default function SettingsScreen() {
         <Picker.Item label="Chinese" value="zh" />
         <Picker.Item label="Korean" value="ko" />
       </Picker>
+      <Text style={styles.settingsLabel}>Want a redo?</Text>
+      <Button onPress={() =>
+        confirm().then(ok => {
+          if (ok) { cardSetter([]) }
+        })
+      } title="Delete all cards" />
     </View >
   )
 }
+
+
 
 SettingsScreen.navigationOptions = {
   title: 'Settings',

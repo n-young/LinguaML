@@ -100,7 +100,7 @@ const translateText = async text => {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-      Environment.GOOGLE_CLOUD_VISION_API_KEY,
+    Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({

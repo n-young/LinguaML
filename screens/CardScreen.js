@@ -12,6 +12,7 @@ import { useRoute } from '@react-navigation/core';
 import FlipView from '../components/FlipView';
 import { useNavigation } from '@react-navigation/native';
 import useDeviceOrientation from '@rnhooks/device-orientation';
+import Tts from 'react-native-tts';
 
 const styles = StyleSheet.create({
   card: {
@@ -68,11 +69,14 @@ export default function CardScreen() {
   const [flipped, flip] = useReducer(f => !f, false);
   navigation.setOptions({
     headerRight: () => (
-      <Button
-        onPress={() => navigation.navigate('EditCard', { card })}
-        title="Edit"
-        style={{ marginRight: 16 }}
-      />
+      <>
+        <Button
+          onPress={() => navigation.navigate('EditCard', { card })}
+          title="Edit"
+          style={{ marginRight: 16 }}
+        />
+        <Button onPress={() => Tts.speak(flipped ? card.native : card.foreign)} title="Speak" />
+      </>
     ),
   });
   return (
