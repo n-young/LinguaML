@@ -37,7 +37,7 @@ function HomeScreen() {
 
   const takePicture = async () => {
     if (cameraRef.current) {
-      const options = { quality: 0.5, base64: true };
+      const options = { quality: 0.5, doNotSave: true, base64: true };
       setLoadState('loading');
       try {
         const data = await cameraRef.current.takePictureAsync(options);
