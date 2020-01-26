@@ -8,6 +8,7 @@ import {
   Animated,
   Vibration,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
@@ -17,23 +18,39 @@ import { red, orange, green } from '../constants';
 import { useCards, useSetCards, useLang, useSetLang } from '../store';
 import uuid from 'uuid/v4';
 import Translator from './Translate';
+import Card from '../components/Card';
 
 function HomeScreen() {
   const [loadState, setLoadState] = useState('idle');
+  const [cardLabel, setCardLabel] = useState('');
   const cameraRef = useRef();
   const navigation = useNavigation();
   const setCards = useSetCards();
   const cards = useCards();
   const lang = useLang();
+  const valueRef = useRef(new Animated.Value(0));
 
   const loadStateRef = useRef();
   loadStateRef.current = loadState;
 
   const addCard = card => {
     setCards(cards => cards.concat(card));
-    setLoadState('ok');
-    setTimeout(() => setLoadState('idle'), 1500);
-    Vibration.vibrate();
+    setTimeout(() => {
+      setLoadState('ok');
+      setTimeout(() => setLoadState('idle'), 1500);
+      Vibration.vibrate();
+    }, 180);
+    setCardLabel(card.foreign);
+    Animated.sequence([
+      Animated.timing(valueRef.current, {
+        toValue: 1,
+        duration: 1500,
+      }),
+      Animated.timing(valueRef.current, {
+        toValue: 0,
+        duration: 1,
+      }),
+    ]).start();
   };
 
   const takePicture = async () => {
@@ -125,6 +142,38 @@ function HomeScreen() {
       <View style={styles.spinner} pointerEvents="none">
         <ActivityIndicator animating={loadState === 'loading'} size="large" />
       </View>
+      <Animated.View
+        style={{
+          width: '100%',
+          position: 'absolute',
+          opacity: valueRef.current.interpolate({
+            inputRange: [0, 0.25, 0.8, 1],
+            outputRange: [0.5, 1, 1, 0],
+          }),
+          top: 0,
+          transform: [
+            {
+              translateX: valueRef.current.interpolate({
+                inputRange: [0, 0.8, 1],
+                outputRange: [0, 0, Dimensions.get('window').width * 0.4],
+              }),
+            },
+            {
+              translateY: valueRef.current.interpolate({
+                inputRange: [0, 0.25, 1],
+                outputRange: [-50, 0, Dimensions.get('window').height - 170],
+              }),
+            },
+            {
+              scale: valueRef.current.interpolate({
+                inputRange: [0, 0.25, 0.8, 1],
+                outputRange: [0, 1, 1, 0.1],
+              }),
+            },
+          ],
+        }}>
+        <Card label={cardLabel} />
+      </Animated.View>
     </View>
   );
 }
