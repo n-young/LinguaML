@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     shadowOffset: { width: 10, height: 10 },
     shadowOpacity: 0.2,
+    elevation: 12,
   },
   portraitCard: {
     height: 200,

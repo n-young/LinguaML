@@ -191,6 +191,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
+    elevation: 12,
   },
   listButton: {
     width: 50,
@@ -200,6 +201,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 0 },
+    elevation: 12,
   },
 });
 
