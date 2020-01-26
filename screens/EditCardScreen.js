@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    margin: 16,
+    marginHorizontal: 16,
+    marginVertical: 32,
   },
   label: {
     fontWeight: 'bold',
@@ -36,7 +37,7 @@ export default function EditCardScreen() {
   const navigation = useNavigation();
   const confirm = useConfirm('Delete', 'This can’t be undone');
   navigation.setOptions({
-    title: `Edit ${card.id}`,
+    title: 'Edit Card',
     headerRight: () => <Button onPress={() => {}} title="Edit" />,
   });
   return (
@@ -49,19 +50,20 @@ export default function EditCardScreen() {
         <Text style={styles.label}>foreign</Text>
         <TextInput style={styles.input} value={card.foreign} />
       </View>
-      <Button
-        style={styles.row}
-        color="red"
-        title="Delete Card"
-        onPress={() =>
-          confirm().then(ok => {
-            if (ok) {
-              setCards(cards => cards.filter(c => c.id !== card.id));
-              navigation.navigate({ key: 'card-list' });
-            }
-          })
-        }
-      />
+      <View style={[styles.row, { justifyContent: 'center' }]}>
+        <Button
+          color="red"
+          title="Delete Card"
+          onPress={() =>
+            confirm().then(ok => {
+              if (ok) {
+                setCards(cards => cards.filter(c => c.id !== card.id));
+                navigation.navigate({ key: 'card-list' });
+              }
+            })
+          }
+        />
+      </View>
     </View>
   );
 }
