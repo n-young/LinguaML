@@ -14,6 +14,8 @@ import { useCard } from '../store';
 import useDeviceOrientation from '@rnhooks/device-orientation';
 import Tts from 'react-native-tts';
 
+Tts.setIgnoreSilentSwitch('ignore');
+
 function Card({ label }) {
   return (
     <View
@@ -45,7 +47,10 @@ export default function CardScreen() {
         </View>
         <View style={styles.toolbar}>
           <Button
-            onPress={() => Tts.speak(flipped ? card.native : card.foreign)}
+            onPress={() => {
+              Tts.stop();
+              Tts.speak(flipped ? card.native : card.foreign);
+            }}
             title="Speak"
           />
         </View>
