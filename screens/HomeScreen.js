@@ -14,6 +14,7 @@ import Environment from '../config/environment';
 import { red, orange, green } from '../constants';
 import { useSetCards } from '../store';
 import uuid from 'uuid/v4';
+import Translator from './Translate';
 
 function HomeScreen() {
   const [loadState, setLoadState] = useState('idle');
@@ -41,6 +42,10 @@ function HomeScreen() {
           )
           .finally(() => setTimeout(() => setLoadState('idle'), 3000));
         const response = await promise;
+        const translate = await Translator(response, 'fr');
+        console.log(response);
+        console.log(translate);
+        console.log(translate[0]["translations"][0]["text"]);
         setCards(cards =>
           cards.concat({
             image: data.base64,
@@ -108,7 +113,7 @@ const translateText = async text => {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-      Environment.GOOGLE_CLOUD_VISION_API_KEY,
+    Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({
@@ -132,7 +137,7 @@ async function callGoogleVisionApi(base64) {
 
   if (data) {
     const ret = data.responses[0].labelAnnotations[0].description;
-    console.log('LABEL: ', ret);
+    //console.log('LABEL: ', ret);
     // translate(ret, { from: 'en', to: this.state.foreignLanguage }).then(
     //   text => {
     //     console.log(text);
