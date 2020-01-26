@@ -55,10 +55,10 @@ function HomeScreen() {
     }
   };
 
-  const barcodeRecognized = ({ barcodes }) => {
-    barcodes.forEach(barcode => {
-      console.log(barcode);
-    })
+  const barcodeRecognized = ({ data }) => {
+    if (JSON.parse(data).key == "LinguaML_Vocab" && !setCards.some((x) => x.native == JSON.parse(data).word)) {
+      console.log(data);
+    }
   };
 
   return (

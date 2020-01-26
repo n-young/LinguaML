@@ -122,6 +122,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   modal: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
   },
