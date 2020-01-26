@@ -34,10 +34,10 @@ export default function EditCardScreen() {
   const { card } = useRoute().params;
   const setCards = useSetCards();
   const navigation = useNavigation();
-  const confirm = useConfirm('Delete', 'This can’t be undone')
+  const confirm = useConfirm('Delete', 'This can’t be undone');
   navigation.setOptions({
     title: `Edit ${card.id}`,
-    headerRight: () => <Button onPress={() => { }} title="Edit" />,
+    headerRight: () => <Button onPress={() => {}} title="Edit" />,
   });
   return (
     <View style={styles.wrapper}>
@@ -57,6 +57,7 @@ export default function EditCardScreen() {
           confirm().then(ok => {
             if (ok) {
               setCards(cards => cards.filter(c => c.id !== card.id));
+              navigation.navigate({ key: 'card-list' });
             }
           })
         }
