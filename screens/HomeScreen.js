@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
 import { red, orange, green } from '../constants';
-import { useCards, useSetCards } from '../store';
+import { useCards, useSetCards, useLang, useSetLang } from '../store';
 import uuid from 'uuid/v4';
 import Translator from './Translate';
 
@@ -23,6 +23,7 @@ function HomeScreen() {
   const navigation = useNavigation();
   const setCards = useSetCards();
   const cards = useCards();
+  const lang = useLang();
 
   const loadStateRef = useRef();
   loadStateRef.current = loadState;
@@ -42,24 +43,13 @@ function HomeScreen() {
         const data = await cameraRef.current.takePictureAsync(options);
         const promise = callGoogleVisionApi(data.base64);
         const response = await promise;
-        const translate = await Translator(response, 'fr');
+        const translate = await Translator(response, lang);
         console.log(response);
-        console.log(translate);
         console.log(translate[0]["translations"][0]["text"]);
 
         try {
           const finalCardTranslate = translate[0]["translations"][0]["text"];
           typeof finalCardTranslate !== 'undefined';
-
-
-          setCards(cards =>
-            cards.concat({
-              image: data.base64,
-              id: uuid(),
-              native: response,
-              foreign: finalCardTranslate,
-            })
-          );
           addCard({
             image: data.base64,
             id: uuid(),
