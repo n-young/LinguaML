@@ -19,13 +19,15 @@ import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
 import firebase from '../config/firebase';
 import { orange } from '../constants';
+import { useCards, useSetCards } from '../store';
 //import translate from 'translate';
 
 function HomeScreen() {
   const [uploading, setUploading] = useState(false);
-  const [googleResponse, setGoogleResponse] = useState(null);
   const cameraRef = useRef();
   const navigation = useNavigation();
+  const cards = useCards();
+  const setCards = useSetCards();
 
   const takePicture = async () => {
     if (cameraRef.current) {
@@ -36,7 +38,12 @@ function HomeScreen() {
         const response = await callGoogleVisionApi(data.base64).finally(() =>
           setUploading(false)
         );
-        setGoogleResponse(response);
+        setCards(cards.concat({
+          image: data.base64,
+          id: cards.length,
+          native: response,
+          foreign: response,
+        }));
       } catch (error) {
         console.log(error);
       }
