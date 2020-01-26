@@ -39,8 +39,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    width: '100%',
-    backgroundColor: 'black',
+    flex: 1,
+    margin: 'auto',
+    width: '40%',
+    height: '40%',
   }
 });
 
