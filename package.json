@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@google-cloud/translate": "^5.1.4",
     "@react-native-community/masked-view": "^0.1.6",
     "@react-navigation/bottom-tabs": "^5.0.0-alpha.39",
     "@react-navigation/core": "^5.0.0-alpha.37",
@@ -18,7 +19,12 @@
     "@rnhooks/device-orientation": "^0.0.1",
     "@typescript-eslint/eslint-plugin": "^2.17.0",
     "@typescript-eslint/parser": "^2.17.0",
+    "events": "^3.1.0",
+    "expo": "^36.0.2",
+    "expo-image-picker": "^8.0.2",
     "firebase": "^7.7.0",
+    "http": "^0.0.0",
+    "path": "^0.12.7",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-camera": "^3.15.1",
@@ -26,7 +32,9 @@
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.6.2",
     "react-native-screens": "^2.0.0-alpha.29",
+    "translate": "^1.1.1",
     "typescript": "^3.7.5",
+    "url": "^0.11.0",
     "uuid": "^3.4.0"
   },
   "devDependencies": {

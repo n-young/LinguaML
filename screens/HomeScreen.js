@@ -16,9 +16,9 @@ import {
 
 import { useNavigation } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
-import uuid from 'uuid';
 import Environment from '../config/environment';
 import firebase from '../config/firebase';
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 
 function HomeScreen() {
   const [uploading, setUploading] = useState(false);
@@ -26,24 +26,61 @@ function HomeScreen() {
   const cameraRef = useRef();
   const navigation = useNavigation();
 
-  const takePicture = async () => {
-    if (cameraRef.current) {
-      console.log('Hurrah');
+  takePicture = async () => {
+    if (this.camera) {
       const options = { quality: 0.5, base64: true };
-      const data = await cameraRef.current.takePictureAsync(options);
-      const uploadUrl = await uploadImageAsync(data.uri);
-      setUploading(true);
-      try {
-        const response = await submitToGoogle(uploadUrl).finally(() =>
-          setUploading(false)
-        );
-        setGoogleResponse(response);
-        console.log(data.uri);
-      } catch (error) {
-        console.log(error);
-      }
+      const pickerResult = await this.camera.takePictureAsync(options);
+      this.callGoogleVisionApi(pickerResult.base64);
     }
-    console.log('eeea');
+  };
+
+  callGoogleVisionApi = async base64 => {
+    let googleVisionRes = await fetch(
+      'https://vision.googleapis.com/v1/images:annotate?key=' +
+        Environment['GOOGLE_CLOUD_VISION_API_KEY'],
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          requests: [
+            {
+              image: {
+                content: base64,
+              },
+              features: [
+                { type: 'LABEL_DETECTION', maxResults: 1 },
+                { type: 'TEXT_DETECTION', maxResults: 1 },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+
+    await googleVisionRes
+      .json()
+      .then(googleVisionRes => {
+        //console.log(googleVisionRes);
+        if (googleVisionRes) {
+          this.setState({
+            googleVisionDetection: googleVisionRes.responses[0],
+          });
+          console.log('RESPONSE: ', this.state.googleVisionDetection);
+          console.log(
+            'LABEL: ',
+            this.state.googleVisionDetection.labelAnnotations[0].description
+          );
+          const ret = this.state.googleVisionDetection.labelAnnotations[0]
+            .description;
+          translate(ret, { from: 'en', to: this.state.foreignLanguage }).then(
+            text => {
+              console.log(text);
+            }
+          );
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   return (
@@ -81,76 +118,10 @@ function HomeScreen() {
   );
 }
 
-const submitToGoogle = async image => {
-  let body = JSON.stringify({
-    requests: [
-      {
-        features: [
-          { type: 'LABEL_DETECTION', maxResults: 10 },
-          { type: 'LANDMARK_DETECTION', maxResults: 5 },
-          { type: 'FACE_DETECTION', maxResults: 5 },
-          { type: 'LOGO_DETECTION', maxResults: 5 },
-          { type: 'TEXT_DETECTION', maxResults: 5 },
-          { type: 'DOCUMENT_TEXT_DETECTION', maxResults: 5 },
-          { type: 'SAFE_SEARCH_DETECTION', maxResults: 5 },
-          { type: 'IMAGE_PROPERTIES', maxResults: 5 },
-          { type: 'CROP_HINTS', maxResults: 5 },
-          { type: 'WEB_DETECTION', maxResults: 5 },
-        ],
-        image: {
-          source: {
-            imageUri: image,
-          },
-        },
-      },
-    ],
-  });
-  console.log('Body:');
-  console.log(body);
-  let response = await fetch(
-    'https://vision.googleapis.com/v1/images:annotate?key=' +
-      Environment.GOOGLE_CLOUD_VISION_API_KEY,
-    {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: body,
-    }
-  );
-  console.log('Response:');
-  console.log(response);
-  let responseJson = await response.json();
-  console.log(responseJson);
-  return responseJson;
+translateText = async text => {
+  let translation = await translate.translate(text, this.state.foreignLanguage);
+  console.log('Translations:', translation);
 };
-
-async function uploadImageAsync(uri) {
-  const blob = await new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.onload = function() {
-      resolve(xhr.response);
-    };
-    xhr.onerror = function(e) {
-      console.log(e);
-      reject(new TypeError('Network request failed'));
-    };
-    xhr.responseType = 'blob';
-    xhr.open('GET', uri, true);
-    xhr.send(null);
-  });
-
-  const ref = firebase
-    .storage()
-    .ref()
-    .child(uuid.v4());
-  const snapshot = await ref.put(blob);
-
-  blob.close();
-
-  return await snapshot.ref.getDownloadURL();
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -178,6 +149,35 @@ const styles = StyleSheet.create({
   listButton: {
     width: 50,
     color: 'white',
+    backgroundColor: '#fff',
+    paddingBottom: 10,
+  },
+  developmentModeText: {
+    marginBottom: 20,
+    color: 'rgba(0,0,0,0.4)',
+    fontSize: 14,
+    lineHeight: 19,
+    textAlign: 'center',
+  },
+  contentContainer: {
+    paddingTop: 30,
+  },
+
+  getStartedContainer: {
+    alignItems: 'center',
+    marginHorizontal: 50,
+  },
+
+  getStartedText: {
+    fontSize: 17,
+    color: 'rgba(96,100,109, 1)',
+    lineHeight: 24,
+    textAlign: 'center',
+  },
+
+  helpContainer: {
+    marginTop: 15,
+    alignItems: 'center',
   },
 });
 
