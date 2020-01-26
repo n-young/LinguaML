@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './screens/HomeScreen';
 import LinksScreen from './screens/LinksScreen';
 import CardScreen from './screens/CardScreen';
+import EditCardScreen from './screens/EditCardScreen';
 import SettingsScreen from './screens/SettingsScreen';
 
 enableScreens();
@@ -33,6 +34,7 @@ function LinksStackScreen() {
         options={{ headerLargeTitle: true }}
       />
       <LinksStack.Screen name="Card" component={CardScreen} />
+      <LinksStack.Screen name="EditCard" component={EditCardScreen} />
     </LinksStack.Navigator>
   );
 }

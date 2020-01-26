@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   StyleSheet,
   Platform,
+  StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -87,6 +88,7 @@ function CardRow({ card, separators }) {
       onShowUnderlay={separators.highlight}
       onHideUnderlay={separators.unhighlight}>
       <View style={styles.row}>
+        <StatusBar hidden={false} />
         <View style={styles.rowLabels}>
           <Text style={styles.title}>{card.foreign}</Text>
           <Text style={styles.subtitle}>{card.native}</Text>

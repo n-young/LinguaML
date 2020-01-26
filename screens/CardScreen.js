@@ -55,9 +55,15 @@ function Card({ label }) {
 
 export default function CardScreen() {
   const { card } = useRoute().params;
+  const navigation = useNavigation();
   const [flipped, flip] = useReducer(f => !f, false);
   useNavigation().setOptions({
-    headerRight: () => <Button onPress={() => {}} title="Edit" />,
+    headerRight: () => (
+      <Button
+        onPress={() => navigation.navigate('EditCard', { card })}
+        title="Edit"
+      />
+    ),
   });
   return (
     <TouchableWithoutFeedback onPress={flip}>
