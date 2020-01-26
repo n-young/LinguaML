@@ -80,7 +80,7 @@ export default function CardScreen() {
           animationType={'slide'}
           onRequestClose={() => closeModal()}
         >
-          <View style={styles.wrapper}>
+          <View style={styles.modal}>
             <Image
               style={styles.qr}
               source={{ uri: qrcode(JSON.stringify({ key: 'LinguaML_Vocab', word: card.native })) }}
@@ -120,6 +120,8 @@ const styles = StyleSheet.create({
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
+  },
+  modal: {
     alignItems: 'center',
     justifyContent: 'center',
   },
