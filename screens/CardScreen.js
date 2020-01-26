@@ -34,16 +34,18 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 50,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   wrapper: {
     flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
   },
   image: {
     flex: 1,
-    margin: 'auto',
-    width: '40%',
-    height: '40%',
-  }
+    margin: 16,
+    marginTop: 200 + 32 + 16,
+  },
 });
 
 function Card({ label }) {
@@ -69,6 +71,7 @@ export default function CardScreen() {
       <Button
         onPress={() => navigation.navigate('EditCard', { card })}
         title="Edit"
+        style={{ marginRight: 16 }}
       />
     ),
   });
@@ -78,11 +81,16 @@ export default function CardScreen() {
         <FlipView
           isFlipped={flipped}
           flipDuration={250}
+          style={{ zIndex: 1 }}
           flipEasing={Easing.linear}
           front={<Card label={card.foreign} />}
           back={<Card label={card.native} />}
         />
-        <Image style={styles.image} source={{ uri: `data:image/jpg;base64,${card.image}` }} />
+        <Image
+          style={styles.image}
+          source={{ uri: `data:image/jpg;base64,${card.image}` }}
+          resizeMode="contain"
+        />
       </View>
     </TouchableWithoutFeedback>
   );

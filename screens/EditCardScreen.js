@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useRoute } from '@react-navigation/core';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import confirm from '../confirm';
+import { useSetCards } from '../store';
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -30,7 +32,9 @@ const styles = StyleSheet.create({
 });
 export default function EditCardScreen() {
   const { card } = useRoute().params;
-  useNavigation().setOptions({
+  const setCards = useSetCards();
+  const navigation = useNavigation();
+  navigation.setOptions({
     title: `Edit ${card.id}`,
     headerRight: () => <Button onPress={() => {}} title="Edit" />,
   });
@@ -40,6 +44,22 @@ export default function EditCardScreen() {
         <Text style={styles.label}>native</Text>
         <TextInput style={styles.input} value={card.native} />
       </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>foreign</Text>
+        <TextInput style={styles.input} value={card.foreign} />
+      </View>
+      <Button
+        style={styles.row}
+        color="red"
+        title="Delete Card"
+        onPress={() =>
+          confirm('Delete', 'This can’t be undone').then(ok => {
+            if (ok) {
+              setCards(cards => cards.filter(c => c.id !== card.id));
+            }
+          })
+        }
+      />
     </View>
   );
 }

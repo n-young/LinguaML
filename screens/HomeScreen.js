@@ -20,13 +20,12 @@ import Environment from '../config/environment';
 import firebase from '../config/firebase';
 import { orange } from '../constants';
 import { useCards, useSetCards } from '../store';
-//import translate from 'translate';
+import uuid from 'uuid/v4';
 
 function HomeScreen() {
   const [uploading, setUploading] = useState(false);
   const cameraRef = useRef();
   const navigation = useNavigation();
-  const cards = useCards();
   const setCards = useSetCards();
 
   const takePicture = async () => {
@@ -38,13 +37,14 @@ function HomeScreen() {
         const response = await callGoogleVisionApi(data.base64).finally(() =>
           setUploading(false)
         );
-        console.log(data.base64)
-        setCards(cards.concat({
-          image: data.base64,
-          id: cards.length,
-          native: response,
-          foreign: response,
-        }));
+        setCards(cards =>
+          cards.concat({
+            image: data.base64,
+            id: uuid(),
+            native: response,
+            foreign: response,
+          })
+        );
       } catch (error) {
         console.log(error);
       }
@@ -56,7 +56,6 @@ function HomeScreen() {
       <StatusBar hidden />
       <RNCamera
         ref={cameraRef}
-        type={RNCamera.Constants.Type.front}
         style={{
           flex: 1,
           width: '100%',
@@ -95,7 +94,7 @@ const translateText = async text => {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-    Environment.GOOGLE_CLOUD_VISION_API_KEY,
+      Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({
@@ -115,6 +114,7 @@ async function callGoogleVisionApi(base64) {
   );
 
   const data = await googleVisionRes.json().catch(error => console.log(error));
+  console.log(data);
 
   if (data) {
     const ret = data.responses[0].labelAnnotations[0].description;

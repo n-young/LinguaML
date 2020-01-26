@@ -12,10 +12,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useCards } from '../store';
 
 export default function CardListScreen() {
-  return (
+  const cards = useCards();
+  return cards.length ? (
     <FlatList
       style={styles.container}
-      data={useCards()}
+      data={cards}
       keyExtractor={({ id }) => id}
       ItemSeparatorComponent={
         Platform.OS !== 'android' &&
@@ -27,6 +28,10 @@ export default function CardListScreen() {
         <CardRow card={item} separators={separators} />
       )}
     />
+  ) : (
+    <View style={styles.blankSlate}>
+      <Text style={styles.blankSlateLabel}>No cards</Text>
+    </View>
   );
 }
 
@@ -38,6 +43,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  blankSlate: {
+    flex: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  blankSlateLabel: {
+    fontSize: 50,
+    fontWeight: '300',
+    opacity: 0.33,
   },
   row: {
     display: 'flex',
