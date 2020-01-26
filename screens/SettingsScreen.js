@@ -3,12 +3,9 @@ import { View, Text, Picker, StyleSheet, Button, Platform } from 'react-native';
 import { useSetCards, useLang, useSetLang } from '../store';
 import useConfirm from '../confirm';
 import langs from '../data/langs.json';
-import Translator from './Translate';
 
 export default function SettingsScreen() {
-  const lang = useLang();
   const langSetter = useSetLang();
-  const cards = useCards();
   const cardSetter = useSetCards();
   const confirm = useConfirm('Delete', 'This can’t be undone');
 

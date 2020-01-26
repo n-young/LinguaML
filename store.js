@@ -2,10 +2,10 @@ import React, { useState, useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useRoute } from '@react-navigation/core';
 
-const cardContext = React.createContext([]);
-const cardSetterContext = React.createContext(() => {});
-const langContext = React.createContext('');
-const langSetterContext = React.createContext(() => '');
+const cardContext = React.createContext();
+const cardSetterContext = React.createContext();
+const langContext = React.createContext();
+const langSetterContext = React.createContext();
 
 async function putCards(elt) {
   try {

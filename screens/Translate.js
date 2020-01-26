@@ -1,13 +1,9 @@
-//import * as RNLocalize from "react-native-localize";
 import Environment from '../config/environment';
 
-//const request = require('request');
-const uuidv4 = require('uuid/v4');
+import uuid from 'uuid/v4';
 
 const endpoint =
   'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0';
-
-//const locales = RNLocalize.getLocales();
 
 async function Translator(text, lang) {
   let options = {
@@ -21,7 +17,7 @@ async function Translator(text, lang) {
     headers: {
       'Ocp-Apim-Subscription-Key': Environment.MS_AZURE_TRANSLATION_API_KEY,
       'Content-type': 'application/json',
-      'X-ClientTraceId': uuidv4().toString(),
+      'X-ClientTraceId': uuid().toString(),
     },
     body: [
       {
@@ -46,11 +42,6 @@ async function Translator(text, lang) {
   ).then(res => res.json());
 
   return output;
-  /*
-    request(options, function (err, res, body) {
-        return JSON.stringify(body, null, 4);
-    });
-    */
 }
 
 export default Translator;
