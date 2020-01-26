@@ -36,7 +36,7 @@ export default function CardScreen() {
           <Button
             onPress={() => {
               Tts.stop();
-              Tts.setDefaultLanguage(flipped ? 'en' : lang);
+              Tts.setDefaultLanguage(flipped ? 'en' : card.lang);
               Tts.speak(flipped ? card.native : card.foreign);
             }}
             title="Speak"
