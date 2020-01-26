@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
 import { red, orange, green } from '../constants';
-import { useCards, useSetCards, useLang, useSetLang } from '../store';
+import { useCards, useSetCards, useLang, useSetLang, putCards, pullCards } from '../store';
 import uuid from 'uuid/v4';
 import Translator from './Translate';
 import Card from '../components/Card';
@@ -51,6 +51,10 @@ function HomeScreen() {
         duration: 1,
       }),
     ]).start();
+    putCards(cards);
+    setLoadState('ok');
+    setTimeout(() => setLoadState('idle'), 1500);
+    Vibration.vibrate();
   };
 
   const takePicture = async () => {
