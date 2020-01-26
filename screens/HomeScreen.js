@@ -8,13 +8,14 @@ import {
   Animated,
   Vibration,
   ActivityIndicator,
+  AsyncStorage
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
 import { red, orange, green } from '../constants';
-import { useCards, useSetCards, useLang, useSetLang } from '../store';
+import { useCards, useSetCards, useLang, useSetLang, storeCard, retrieveAllCards } from '../store';
 import uuid from 'uuid/v4';
 import Translator from './Translate';
 
@@ -30,6 +31,7 @@ function HomeScreen() {
   loadStateRef.current = loadState;
 
   const addCard = card => {
+    storeCard(card);
     setCards(cards => cards.concat(card));
     setLoadState('ok');
     setTimeout(() => setLoadState('idle'), 1500);
@@ -114,8 +116,9 @@ function HomeScreen() {
             </TouchableOpacity>
           </Animated.View>
           <TouchableOpacity
-            onPress={() =>
+            onPress={() => {
               navigation.navigate({ name: 'Cards', key: 'card-list' })
+            }
             }
             activeOpacity={0.75}>
             <Text style={styles.listButton}>☰</Text>
@@ -125,14 +128,14 @@ function HomeScreen() {
       <View style={styles.spinner} pointerEvents="none">
         <ActivityIndicator animating={loadState === 'loading'} size="large" />
       </View>
-    </View>
+    </View >
   );
 }
 
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-      Environment.GOOGLE_CLOUD_VISION_API_KEY,
+    Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({

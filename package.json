@@ -29,6 +29,7 @@
     "react-native": "0.61.5",
     "react-native-camera": "^3.15.1",
     "react-native-gesture-handler": "^1.5.3",
+    "react-native-local-mongodb": "^2.2.9",
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.6.2",
     "react-native-screens": "^2.0.0-alpha.29",

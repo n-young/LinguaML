@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/core';
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, Button, AsyncStorage } from 'react-native';
 import useConfirm from '../confirm';
 import { useCard, useSetCards } from '../store';
 

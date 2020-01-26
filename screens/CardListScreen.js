@@ -9,30 +9,56 @@ import {
   StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useCards } from '../store';
+import { useCards, retrieveAllCards, retrieveCard } from '../store';
 
-export default function CardListScreen() {
-  const cards = useCards();
-  return cards.length ? (
-    <FlatList
-      style={styles.container}
-      data={cards}
-      keyExtractor={({ id }) => id}
-      ItemSeparatorComponent={
-        Platform.OS !== 'android' &&
-        (({ highlighted }) => (
-          <View style={[styles.separator, highlighted && { marginLeft: 0 }]} />
-        ))
-      }
-      renderItem={({ item, separators }) => (
-        <CardRow card={item} separators={separators} />
-      )}
-    />
-  ) : (
-    <View style={styles.blankSlate}>
-      <Text style={styles.blankSlateLabel}>No cards</Text>
-    </View>
-  );
+async function createCards() {
+  let outFirst = await retrieveAllCards();
+  //console.log(outFirst);
+  let out = JSON.stringify(outFirst[0]);
+  return outFirst;
+}
+
+export default async function CardListScreen() {
+  // const { params } = this.props.navigation.state;
+  // const cards = JSON.parse(params.cards);
+  //console.log(cards);
+  const output = await createCards().then(cards => {
+    //console.log(cards);
+    //const cards = oldCards.json();
+    console.log(cards.length);
+    console.log(Object.keys(cards));
+    console.log(cards[0].id);
+    console.log(Array.isArray(Object.values(cards)));
+    console.log(Object.values(cards)[0].id);
+    return cards.length ? (
+      <FlatList
+        style={styles.container}
+        data={Object.values(cards)}
+        keyExtractor={({ item }) => item.id}
+        ItemSeparatorComponent={
+          Platform.OS !== 'android' &&
+          (({ highlighted }) => (
+            <View style={[styles.separator, highlighted && { marginLeft: 0 }]} />
+          ))
+        }
+        renderItem={({ item, separators }) => {
+          console.log("item: " + item);
+          return <CardRow card={item} separators={separators} />
+        }
+        }
+      />
+    ) : (
+        <View style={styles.blankSlate}>
+          <Text style={styles.blankSlateLabel}>No cards</Text>
+        </View>
+      );
+  });
+
+  console.log("output: " + output);
+
+  //console.log(JSON.stringify(output));
+
+  return output;
 }
 
 CardListScreen.navigationOptions = {
@@ -94,6 +120,8 @@ const styles = StyleSheet.create({
 });
 
 function CardRow({ card, separators }) {
+  console.log("1");
+  console.log("cardrow: " + card.id);
   const navigation = useNavigation();
   return (
     <TouchableHighlight

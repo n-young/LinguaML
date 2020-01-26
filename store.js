@@ -1,10 +1,80 @@
 import React, { useState, useContext } from 'react';
+import { AsyncStorage } from 'react-native';
 import { useRoute } from '@react-navigation/core';
 
 const cardContext = React.createContext([]);
-const cardSetterContext = React.createContext(() => {});
+const cardSetterContext = React.createContext(() => { });
 const langContext = React.createContext('');
 const langSetterContext = React.createContext(() => '');
+
+// create a function that saves your data asyncronously
+_storeCard = async (card) => {
+  try {
+    let cardData = {};
+    cardData.image = card.image;
+    cardData.id = card.id;
+    cardData.native = card.native;
+    cardData.foreign = card.foreign;
+    await AsyncStorage.setItem(card.id, JSON.stringify(cardData));
+  } catch (error) {
+    // Error saving data
+    throw (error);
+  }
+}
+
+export async function storeCard(card) {
+  try {
+    let cardData = {};
+    cardData.image = card.image;
+    cardData.id = card.id;
+    cardData.native = card.native;
+    cardData.foreign = card.foreign;
+    await AsyncStorage.setItem(card.id, JSON.stringify(cardData));
+  } catch (error) {
+    // Error saving data
+    throw (error);
+  }
+}
+
+_retrieveCard = async (card_id) => {
+  try {
+    const value = await AsyncStorage.getItem(card_id);
+    if (value !== null) {
+      // Our data is fetched successfully
+      return value;
+    }
+  } catch (error) {
+    // Error retrieving data
+  }
+}
+
+export async function retrieveCard(card_id) {
+  try {
+    const value = await AsyncStorage.getItem(card_id);
+    if (value !== null) {
+      // Our data is fetched successfully
+      let out = JSON.parse(value);
+      return out;
+    }
+  } catch (error) {
+    // Error retrieving data
+    throw (error);
+  }
+}
+
+export async function retrieveAllCards() {
+  try {
+    const keys = await AsyncStorage.getAllKeys();
+    let cards = [];
+    for (const key of keys) {
+      let card = await retrieveCard(key);
+      cards.push(card);
+    }
+    return cards;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export function Provider({ children }) {
   const [cards, setCards] = useState([]);
