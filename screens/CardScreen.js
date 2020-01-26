@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import FlipView from '../components/FlipView';
-import { useCard } from '../store';
+import { useCard, useLang } from '../store';
 import useDeviceOrientation from '@rnhooks/device-orientation';
 import Tts from 'react-native-tts';
 
@@ -33,6 +33,7 @@ function Card({ label }) {
 export default function CardScreen() {
   const card = useCard();
   const navigation = useNavigation();
+  const lang = useLang();
   const [flipped, flip] = useReducer(f => !f, false);
 
   navigation.setOptions({
@@ -49,6 +50,7 @@ export default function CardScreen() {
           <Button
             onPress={() => {
               Tts.stop();
+              Tts.setDefaultLanguage(flipped ? 'en' : lang);
               Tts.speak(flipped ? card.native : card.foreign);
             }}
             title="Speak"
