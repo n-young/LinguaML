@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { RNCamera } from 'react-native-camera';
 import Environment from '../config/environment';
 import { red, orange, green } from '../constants';
@@ -29,6 +29,7 @@ function HomeScreen() {
   const cards = useCards();
   const lang = useLang();
   const valueRef = useRef(new Animated.Value(0));
+  const isFocused = useIsFocused();
 
   const loadStateRef = useRef();
   loadStateRef.current = loadState;
@@ -45,10 +46,12 @@ function HomeScreen() {
       Animated.timing(valueRef.current, {
         toValue: 1,
         duration: 1500,
+        useNativeDriver: true,
       }),
       Animated.timing(valueRef.current, {
         toValue: 0,
-        duration: 1,
+        duration: 10,
+        useNativeDriver: true,
       }),
     ]).start();
   };
@@ -101,43 +104,45 @@ function HomeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar hidden />
-      <RNCamera
-        ref={cameraRef}
-        style={{
-          flex: 1,
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'flex-end',
-        }}
-        captureAudio={false}
-        onBarCodeRead={barcodeRecognized}>
-        <View style={styles.controls}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Settings')}
-            activeOpacity={0.75}>
-            <Text style={styles.listButton}>⚙&#xfe0e;</Text>
-          </TouchableOpacity>
-          <Animated.View
-            style={[
-              styles.shutterBorder,
-              styles[`shutterBorder_${loadState}`],
-            ]}>
+      {isFocused &&
+        <RNCamera
+          ref={cameraRef}
+          style={{
+            flex: 1,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }}
+          captureAudio={false}
+          onBarCodeRead={barcodeRecognized}>
+          <View style={styles.controls}>
             <TouchableOpacity
-              onPress={takePicture}
-              activeOpacity={0.75}
-              style={styles.capture}>
-              <View style={styles.shutterButton} />
+              onPress={() => navigation.navigate('Settings')}
+              activeOpacity={0.75}>
+              <Text style={styles.listButton}>⚙&#xfe0e;</Text>
             </TouchableOpacity>
-          </Animated.View>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate({ name: 'Cards', key: 'card-list' })
-            }
-            activeOpacity={0.75}>
-            <Text style={styles.listButton}>☰</Text>
-          </TouchableOpacity>
-        </View>
-      </RNCamera>
+            <Animated.View
+              style={[
+                styles.shutterBorder,
+                styles[`shutterBorder_${loadState}`],
+              ]}>
+              <TouchableOpacity
+                onPress={takePicture}
+                activeOpacity={0.75}
+                style={styles.capture}>
+                <View style={styles.shutterButton} />
+              </TouchableOpacity>
+            </Animated.View>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate({ name: 'Cards', key: 'card-list' })
+              }
+              activeOpacity={0.75}>
+              <Text style={styles.listButton}>☰</Text>
+            </TouchableOpacity>
+          </View>
+        </RNCamera>
+      }
       <View style={styles.spinner} pointerEvents="none">
         <ActivityIndicator animating={loadState === 'loading'} size="large" />
       </View>
@@ -145,6 +150,7 @@ function HomeScreen() {
         style={{
           width: '100%',
           position: 'absolute',
+          backgroundColor: "transparent",
           opacity: valueRef.current.interpolate({
             inputRange: [0, 0.25, 0.8, 1],
             outputRange: [0.5, 1, 1, 0],
@@ -169,6 +175,7 @@ function HomeScreen() {
                 outputRange: [0, 1, 1, 0.1],
               }),
             },
+            { perspective: 1000 },
           ],
         }}>
         <Card label={cardLabel} />
@@ -180,7 +187,7 @@ function HomeScreen() {
 async function callGoogleVisionApi(base64) {
   let googleVisionRes = await fetch(
     'https://vision.googleapis.com/v1/images:annotate?key=' +
-      Environment.GOOGLE_CLOUD_VISION_API_KEY,
+    Environment.GOOGLE_CLOUD_VISION_API_KEY,
     {
       method: 'POST',
       body: JSON.stringify({

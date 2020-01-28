@@ -19,6 +19,8 @@ async function pull(key) {
   try {
     const value = await AsyncStorage.getItem(key);
     if (value != null) {
+      console.log("Pull");
+      console.log(value);
       return JSON.parse(value);
     }
   } catch (error) {
